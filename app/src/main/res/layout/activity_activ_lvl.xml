@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d9d7c2"
+    tools:context=".ActivLvlActivity">
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="27dp"
+        android:backgroundTint="#434031"
+        android:text="назад"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_next3"
+        android:layout_width="115dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="27dp"
+        android:backgroundTint="#434031"
+        android:text="Вперед"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_lvlActiv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="191dp"
+        android:text="Ваш уровень активности"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.441"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_low"
+        android:layout_width="320dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="37dp"
+        android:backgroundTint="#DADCCF"
+        android:text="Сидячий образ жизни, отсуствие физических нагрузок"
+        android:textColor="#434031"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_lvlActiv"
+        app:strokeColor="#434031"
+        app:strokeWidth="2dp" />
+
+    <Button
+        android:id="@+id/btn_low3"
+        android:layout_width="320dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="284dp"
+        android:layout_marginEnd="37dp"
+        android:backgroundTint="#DADCCF"
+        android:text="Сидячий образ жизни, отсуствие физических нагрузок"
+        android:textColor="#434031"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_lvlActiv"
+        app:strokeColor="#434031"
+        app:strokeWidth="2dp" />
+
+    <Button
+        android:id="@+id/btn_low4"
+        android:layout_width="320dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="176dp"
+        android:layout_marginEnd="37dp"
+        android:backgroundTint="#DADCCF"
+        android:text="Сидячий образ жизни, отсуствие физических нагрузок"
+        android:textColor="#434031"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_lvlActiv"
+        app:strokeColor="#434031"
+        app:strokeWidth="2dp" />
+
+    <Button
+        android:id="@+id/btn_low2"
+        android:layout_width="320dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginEnd="37dp"
+        android:backgroundTint="#DADCCF"
+        android:text="Сидячий образ жизни, отсуствие физических нагрузок"
+        android:textColor="#434031"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_lvlActiv"
+        app:strokeColor="#434031"
+        app:strokeWidth="2dp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginEnd="306dp"
+        android:layout_marginBottom="5dp"
+        android:text="Низкий"
+        app:layout_constraintBottom_toTopOf="@+id/btn_low"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="54dp"
+        android:layout_marginEnd="298dp"
+        android:text="Высокий"
+        app:layout_constraintBottom_toTopOf="@+id/btn_low2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginEnd="298dp"
+        android:text="Средний"
+        app:layout_constraintBottom_toTopOf="@+id/btn_low3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="54dp"
+        android:layout_marginEnd="280dp"
+        android:text="Умеренный"
+        app:layout_constraintBottom_toTopOf="@+id/btn_low4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

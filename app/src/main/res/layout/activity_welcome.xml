@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d9d7c2"
+    android:backgroundTint="#d9d7c2"
+    tools:context=".WelcomeActivity">
+
+    <ImageButton
+        android:id="@+id/imgBtn_F"
+        android:layout_width="205dp"
+        android:layout_height="187dp"
+        android:layout_marginStart="103dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="103dp"
+        android:layout_marginBottom="57dp"
+        android:backgroundTint="#C3C7B0"
+        android:contentDescription="Женский"
+        android:src="@android:drawable/btn_star"
+        app:layout_constraintBottom_toTopOf="@+id/imgBtn_M"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_gender"
+        tools:src="@drawable/aesthetic_woman_rsquo_s_body_vector_line_art_minimal_grayscale_drawings_1" />
+
+    <ImageButton
+        android:id="@+id/imgBtn_M"
+        android:layout_width="205dp"
+        android:layout_height="187dp"
+        android:layout_marginStart="103dp"
+        android:layout_marginTop="284dp"
+        android:layout_marginEnd="103dp"
+        android:layout_marginBottom="75dp"
+        android:backgroundTint="#C3C7B0"
+        android:contentDescription="Мужской"
+        android:src="@android:drawable/btn_star"
+        app:layout_constraintBottom_toTopOf="@+id/btn_Back2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_gender"
+        tools:src="@drawable/pngtreeone_line_art_of_gorgeous_8494264_1" />
+
+    <TextView
+        android:id="@+id/txt_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="181dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="172dp"
+        android:text="Выбери пол "
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_Back2"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="27dp"
+        android:backgroundTint="#434031"
+        android:text="назад"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_Next2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="27dp"
+        android:backgroundTint="#434031"
+        android:text="далее"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
