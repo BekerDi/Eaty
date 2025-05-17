@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 
 class WelcomeActivity : AppCompatActivity() {
 
-    private lateinit var dbHelper: UserDatabaseHelper
+
     private var selectedGender: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,6 @@ class WelcomeActivity : AppCompatActivity() {
         }
 
         // Инициализация базы данных
-        dbHelper = UserDatabaseHelper(this)
 
         // Поиск элементов интерфейса
         val buttonMale = findViewById<ImageButton>(R.id.imgBtn_M)

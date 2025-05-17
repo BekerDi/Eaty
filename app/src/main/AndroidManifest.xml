@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/pngtreeone_line_art_of_gorgeous_8494264_1"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/aesthetic_woman_rsquo_s_body_vector_line_art_minimal_grayscale_drawings_1"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyEaty"
         tools:targetApi="31">

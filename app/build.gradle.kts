@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.example.myeaty"
     compileSdk = 35
+    ndkVersion = "25.2.9519653"
 
     defaultConfig {
         applicationId = "com.example.myeaty"
@@ -28,6 +29,7 @@ android {
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
+
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
