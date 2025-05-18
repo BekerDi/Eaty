@@ -6,7 +6,7 @@ sqlite3* db = nullptr;
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_myeaty_MainActivity_stringFromJNI(
+Java_com_example_myeaty_SQLBridge_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
 
@@ -17,7 +17,7 @@ Java_com_example_myeaty_MainActivity_stringFromJNI(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_myeaty_MainActivity_nativeOpenDatabase(
+Java_com_example_myeaty_SQLBridge_nativeOpenDatabase(
         JNIEnv *env,
         jobject /* this */,
         jstring dbPath_) {

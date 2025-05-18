@@ -8,26 +8,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        init {
-            System.loadLibrary("native-lib")
-        }
-
-    }
-    external fun nativeOpenDatabase(path: String)
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val dbPath = DatabaseHelper.copyDatabaseFromAssets(this, "MyEaty.db")
-        nativeOpenDatabase(dbPath)
         super.onCreate(savedInstanceState)
+
+        val dbPath = DatabaseHelper.copyDatabaseFromAssets(this, "MyEaty.db")
+        SQLBridge.nativeOpenDatabase(dbPath)  // вызываем native функцию через мост
+
         setContentView(R.layout.activity_main)
 
         val nameEditText = findViewById<EditText>(R.id.edt_Name)
         val continueButton = findViewById<Button>(R.id.btn_next)
         val loginButton = findViewById<Button>(R.id.btn_login)
+
+        nameEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && nameEditText.text.toString() == "...") {
+                nameEditText.setText("")
+            }
+        }
 
         continueButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
