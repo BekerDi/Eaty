@@ -8,8 +8,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        init {
+            System.loadLibrary("native-lib")
+        }
+
+    }
+    external fun nativeOpenDatabase(path: String)
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val dbPath = DatabaseHelper.copyDatabaseFromAssets(this, "MyEaty.db")
+        nativeOpenDatabase(dbPath)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
