@@ -70,38 +70,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RadioButton
-        android:id="@+id/rBtn_skinny"
+    <RadioGroup
+        android:id="@+id/radioGroup_bodyType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:orientation="vertical"
         android:layout_marginTop="28dp"
-        android:text="Похудение "
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_ChangeGoal" />
-
-    <RadioButton
-        android:id="@+id/rBtn_norm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="124dp"
-        android:text="Поддержание"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_ChangeGoal" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_ChangeGoal"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <RadioButton
-        android:id="@+id/rBtn_fat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="76dp"
-        android:text="Набор веса"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_ChangeGoal" />
+        <RadioButton
+            android:id="@+id/rBtn_skinny"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Похудение"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rBtn_norm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Поддержание"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rBtn_fat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Набор веса"
+            android:textSize="20sp" />
+    </RadioGroup>
+
 
     <Button
         android:id="@+id/btn_back2"
@@ -119,13 +119,13 @@
         android:id="@+id/btn_next2"
         android:layout_width="110dp"
         android:layout_height="49dp"
-        android:layout_marginTop="204dp"
         android:layout_marginEnd="52dp"
+        android:layout_marginBottom="57dp"
         android:backgroundTint="#434031"
         android:text="Вперед"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_ChangeGoal" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/ediTxt_Age"
@@ -135,7 +135,7 @@
         android:layout_marginEnd="47dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
+        android:text="..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_date" />
 
@@ -146,7 +146,7 @@
         android:layout_marginEnd="47dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
+        android:text="..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtTxt_Weight" />
 
@@ -157,7 +157,7 @@
         android:layout_marginEnd="47dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
+        android:text="..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ediTxt_Age" />
 

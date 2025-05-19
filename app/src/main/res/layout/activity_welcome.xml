@@ -19,7 +19,7 @@
         android:layout_marginBottom="57dp"
         android:backgroundTint="#C3C7B0"
         android:contentDescription="Женский"
-        android:src="@android:drawable/btn_star"
+        android:src="@drawable/aesthetic_woman_rsquo_s_body_vector_line_art_minimal_grayscale_drawings_1"
         app:layout_constraintBottom_toTopOf="@+id/imgBtn_M"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,8 +36,8 @@
         android:layout_marginBottom="75dp"
         android:backgroundTint="#C3C7B0"
         android:contentDescription="Мужской"
-        android:src="@android:drawable/btn_star"
-        app:layout_constraintBottom_toTopOf="@+id/btn_Back2"
+        android:src="@drawable/pngtreeone_line_art_of_gorgeous_8494264_1"
+        app:layout_constraintBottom_toTopOf="@+id/btn_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btn_Back2"
+        android:id="@+id/btn_back"
         android:layout_width="88dp"
         android:layout_height="48dp"
         android:layout_marginStart="48dp"

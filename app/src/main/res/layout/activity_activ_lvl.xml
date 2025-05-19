@@ -9,7 +9,7 @@
     tools:context=".ActivLvlActivity">
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_back1"
         android:layout_width="88dp"
         android:layout_height="48dp"
         android:layout_marginStart="48dp"
@@ -66,7 +66,7 @@
         app:strokeWidth="2dp" />
 
     <Button
-        android:id="@+id/btn_low3"
+        android:id="@+id/btn_mid"
         android:layout_width="320dp"
         android:layout_height="57dp"
         android:layout_marginStart="58dp"
@@ -84,7 +84,7 @@
         app:strokeWidth="2dp" />
 
     <Button
-        android:id="@+id/btn_low4"
+        android:id="@+id/btn_norm"
         android:layout_width="320dp"
         android:layout_height="57dp"
         android:layout_marginStart="58dp"
@@ -102,7 +102,7 @@
         app:strokeWidth="2dp" />
 
     <Button
-        android:id="@+id/btn_low2"
+        android:id="@+id/btn_hight"
         android:layout_width="320dp"
         android:layout_height="57dp"
         android:layout_marginStart="58dp"
@@ -138,7 +138,7 @@
         android:layout_marginStart="54dp"
         android:layout_marginEnd="298dp"
         android:text="Высокий"
-        app:layout_constraintBottom_toTopOf="@+id/btn_low2"
+        app:layout_constraintBottom_toTopOf="@+id/btn_hight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -149,7 +149,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginEnd="298dp"
         android:text="Средний"
-        app:layout_constraintBottom_toTopOf="@+id/btn_low3"
+        app:layout_constraintBottom_toTopOf="@+id/btn_mid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -160,7 +160,7 @@
         android:layout_marginStart="54dp"
         android:layout_marginEnd="280dp"
         android:text="Умеренный"
-        app:layout_constraintBottom_toTopOf="@+id/btn_low4"
+        app:layout_constraintBottom_toTopOf="@+id/btn_norm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

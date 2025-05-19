@@ -1,5 +1,6 @@
 package com.example.myeaty
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
@@ -31,6 +32,7 @@ class WelcomeActivity : AppCompatActivity() {
         val buttonMale = findViewById<ImageButton>(R.id.imgBtn_M)
         val buttonFemale = findViewById<ImageButton>(R.id.imgBtn_F)
         val buttonSave = findViewById<Button>(R.id.btn_Next2)
+        val buttonBack = findViewById<Button>(R.id.btn_back)
 
         // Логика выбора пола
         buttonMale.setOnClickListener {
@@ -50,8 +52,20 @@ class WelcomeActivity : AppCompatActivity() {
             if (selectedGender == null) {
                 Toast.makeText(this, "Выберите пол", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+
+
+
             }
+            val intent = Intent(this, DateActivity::class.java)
+            intent.putExtra("USER_GENDER", selectedGender)
+            startActivity(intent)
+        }
+        buttonBack.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)}
+
+
 
         }
     }
-}
+
