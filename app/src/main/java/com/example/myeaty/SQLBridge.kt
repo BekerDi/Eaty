@@ -8,7 +8,7 @@ object SQLBridge {
 
 
         external fun nativeOpenDatabase(path: String)
-        external fun nativeSaveUserName(name: String) // если используешь
+
         external fun nativePrintAllUsers() //проверяем запись данных
         external fun nativeSaveUserFullData(
             age: Int,
@@ -18,6 +18,7 @@ object SQLBridge {
             activityLevel: Int,
             password: String
         )
+    external fun nativeCloseDatabase()
 
 
 }

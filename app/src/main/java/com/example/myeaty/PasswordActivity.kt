@@ -65,9 +65,18 @@ class PasswordActivity : AppCompatActivity() {
                 password
             )
 
+
             Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show()
 
 
+
         }
+
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        SQLBridge.nativeCloseDatabase()
     }
 }
+
+

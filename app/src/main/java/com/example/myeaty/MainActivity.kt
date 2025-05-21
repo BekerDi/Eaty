@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         continueButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             if (name.isNotEmpty()) {

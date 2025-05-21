@@ -9,17 +9,7 @@
 
 sqlite3* db = nullptr;
 
-// Возвращает версию SQLite
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_example_myeaty_SQLBridge_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
 
-    std::string hello = "SQLite version: ";
-    hello += sqlite3_libversion();
-    return env->NewStringUTF(hello.c_str());
-}
 
 // Открывает базу данных по указанному пути
 extern "C"
@@ -28,6 +18,8 @@ Java_com_example_myeaty_SQLBridge_nativeOpenDatabase(
         JNIEnv *env,
         jobject /* this */,
         jstring dbPath_) {
+
+
 
     const char *dbPath = env->GetStringUTFChars(dbPath_, nullptr);
 
@@ -53,6 +45,7 @@ Java_com_example_myeaty_SQLBridge_nativeOpenDatabase(
             "password TEXT);";
 
     char* errMsg = nullptr;
+
     int execResult = sqlite3_exec(db, createTableSQL, nullptr, nullptr, &errMsg);
     if (execResult != SQLITE_OK) {
         LOGI("Failed to create table: %s", errMsg);
@@ -60,7 +53,10 @@ Java_com_example_myeaty_SQLBridge_nativeOpenDatabase(
     } else {
         LOGI("Users table created or already exists.");
     }
+    LOGI("Opening database at path: %s", dbPath);
+
 }
+
 
 
     //Проверяем запись данных о пользователе
@@ -72,7 +68,8 @@ Java_com_example_myeaty_SQLBridge_nativePrintAllUsers(JNIEnv* env, jobject /* th
         return;
     }
 
-    const char* sql = "SELECT id, age, weight, height, goal, activity_level, password FROM Users;";
+     const char* sql = "SELECT id, name, age, weight, height, goal, activity_level, password FROM Users;";
+    ;
     sqlite3_stmt* stmt;
 
     int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
@@ -83,12 +80,13 @@ Java_com_example_myeaty_SQLBridge_nativePrintAllUsers(JNIEnv* env, jobject /* th
 
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         int id = sqlite3_column_int(stmt, 0);
-        int age = sqlite3_column_int(stmt, 1);
-        int weight = sqlite3_column_int(stmt, 2);
-        int height = sqlite3_column_int(stmt, 3);
-        int goal = sqlite3_column_int(stmt, 4);
-        int activityLevel = sqlite3_column_int(stmt, 5);
-        const unsigned char* password = sqlite3_column_text(stmt, 6);
+        const unsigned char* name = sqlite3_column_text(stmt, 1);
+        int age = sqlite3_column_int(stmt, 2);
+        int weight = sqlite3_column_int(stmt, 3);
+        int height = sqlite3_column_int(stmt, 4);
+        int goal = sqlite3_column_int(stmt, 5);
+        int activityLevel = sqlite3_column_int(stmt, 6);
+        const unsigned char* password = sqlite3_column_text(stmt, 7);
 
         LOGI("User ID: %d | Age: %d | Weight: %d | Height: %d | Goal: %d | Activity Level: %d | Password: %s",
              id, age, weight, height, goal, activityLevel, password);
@@ -121,7 +119,7 @@ Java_com_example_myeaty_SQLBridge_nativeSaveUserFullData(
                 std::to_string(activityLevel) + ", '" +
                 std::string(password) + "');";
 
-        char* errMsg = nullptr;
+        char *errMsg = nullptr;
         int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg);
         if (rc != SQLITE_OK) {
 
@@ -130,5 +128,15 @@ Java_com_example_myeaty_SQLBridge_nativeSaveUserFullData(
     }
 
     env->ReleaseStringUTFChars(password_, password);
-
 }
+    extern "C"//Закрываем бд
+    JNIEXPORT void JNICALL
+    Java_com_example_myeaty_SQLBridge_nativeCloseDatabase(JNIEnv* env, jobject /* this */) {
+        if (db != nullptr) {
+            sqlite3_close(db);
+            db = nullptr;
+            LOGI("Database closed.");
+        }
+    }
+
+

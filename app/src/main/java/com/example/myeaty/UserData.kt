@@ -15,12 +15,12 @@ object UserData {
     fun clear() {
         name = null
         gender = null
-        var age = null
-        var weight = null
-        var height = null
-        var bodyType = null
-        var goal = null
-        var activityLevel = null
-        var password = null
+         age = null
+         weight = null
+         height = null
+         bodyType = null
+         goal = null
+         activityLevel = null
+         password = null
     }
 }
