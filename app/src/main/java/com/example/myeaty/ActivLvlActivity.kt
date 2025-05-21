@@ -3,6 +3,7 @@ package com.example.myeaty
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -24,30 +25,44 @@ class ActivLvlActivity : AppCompatActivity() {
         }
 
         // Кнопки уровней активности
+        val buttonNext = findViewById<Button>(R.id.btn_next3)
+        val buttonBack = findViewById<Button>(R.id.btn_back1)
+
         val buttonLow = findViewById<Button>(R.id.btn_low)
         val buttonNorm = findViewById<Button>(R.id.btn_norm)
         val buttonMid = findViewById<Button>(R.id.btn_mid)
         val buttonHigh = findViewById<Button>(R.id.btn_hight)
-        val buttonBack = findViewById<Button>(R.id.btn_back1)
 
         val allButtons = listOf(buttonLow, buttonNorm, buttonMid, buttonHigh)
 
         fun selectButton(selectedButton: Button, level: Int) {
             selectedLevel = level
-
-            // Установка прозрачности: выбранная — яркая, остальные — полупрозрачные
             allButtons.forEach { it.alpha = 0.5f }
             selectedButton.alpha = 1.0f
         }
-        buttonBack.setOnClickListener {
-            val intent = Intent(this, DateActivity::class.java)
-            startActivity(intent)
-        }
 
-        // Обработчики нажатий
         buttonLow.setOnClickListener { selectButton(buttonLow, 1) }
         buttonNorm.setOnClickListener { selectButton(buttonNorm, 2) }
         buttonMid.setOnClickListener { selectButton(buttonMid, 3) }
         buttonHigh.setOnClickListener { selectButton(buttonHigh, 4) }
+
+        buttonNext.setOnClickListener {
+            if (selectedLevel == null) {
+                Toast.makeText(this, "Пожалуйста, выберите уровень активности", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Сохраняем в UserData
+            UserData.activityLevel = selectedLevel!!
+
+            // Переход к следующему экрану
+            val intent = Intent(this, PasswordActivity::class.java) // Заменить на ваш экран
+            startActivity(intent)
+        }
+
+        buttonBack.setOnClickListener {
+            val intent = Intent(this, DateActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

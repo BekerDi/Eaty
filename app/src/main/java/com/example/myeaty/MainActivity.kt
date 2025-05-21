@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,7 +14,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val dbPath = DatabaseHelper.copyDatabaseFromAssets(this, "MyEaty.db")
-        SQLBridge.nativeOpenDatabase(dbPath)  // вызываем native функцию через мост
+        SQLBridge.nativeOpenDatabase(dbPath)
+        val dbFile = File(dbPath)
+
+        if (dbFile.exists()) {
+            Toast.makeText(this, "База данных MyEaty существует", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "База данных MyEaty не найдена", Toast.LENGTH_SHORT).show()
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -30,8 +38,9 @@ class MainActivity : AppCompatActivity() {
         continueButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             if (name.isNotEmpty()) {
+                UserData.name = name // Сохраняем имя временно. Пока все введенные данные будут храниться во временных переменных.
+
                 val intent = Intent(this, WelcomeActivity::class.java)
-                intent.putExtra("USER_NAME", name)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Пожалуйста, введите имя", Toast.LENGTH_SHORT).show()

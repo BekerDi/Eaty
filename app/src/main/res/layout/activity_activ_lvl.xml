@@ -10,8 +10,8 @@
 
     <Button
         android:id="@+id/btn_back1"
-        android:layout_width="88dp"
-        android:layout_height="48dp"
+        android:layout_width="110dp"
+        android:layout_height="49dp"
         android:layout_marginStart="48dp"
         android:layout_marginBottom="27dp"
         android:backgroundTint="#434031"
@@ -21,13 +21,13 @@
 
     <Button
         android:id="@+id/btn_next3"
-        android:layout_width="115dp"
-        android:layout_height="52dp"
+        android:layout_width="110dp"
+        android:layout_height="49dp"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="27dp"
         android:backgroundTint="#434031"
         android:text="Вперед"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -58,6 +58,7 @@
         android:text="Сидячий образ жизни, отсуствие физических нагрузок"
         android:textColor="#434031"
         android:textSize="13sp"
+        app:cornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,6 +77,7 @@
         android:text="Сидячий образ жизни, отсуствие физических нагрузок"
         android:textColor="#434031"
         android:textSize="13sp"
+        app:cornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,6 +96,7 @@
         android:text="Сидячий образ жизни, отсуствие физических нагрузок"
         android:textColor="#434031"
         android:textSize="13sp"
+        app:cornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +115,7 @@
         android:text="Сидячий образ жизни, отсуствие физических нагрузок"
         android:textColor="#434031"
         android:textSize="13sp"
+        app:cornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"

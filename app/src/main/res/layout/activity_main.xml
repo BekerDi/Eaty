@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E9EBDE"
-    android:backgroundTint="#C3C7B0"
+    android:backgroundTint="#A8B3A5"
     tools:context="com.example.myeaty.MainActivity">
 
     <Button
@@ -15,9 +15,10 @@
         android:layout_marginStart="65dp"
         android:layout_marginEnd="66dp"
         android:layout_marginBottom="67dp"
-        android:backgroundTint="#C2C6AF"
+        android:backgroundTint="#A7B2A4"
         android:text="Есть аккаунт "
         android:textColor="#434031"
+        app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,9 +32,10 @@
         android:layout_marginStart="65dp"
         android:layout_marginEnd="66dp"
         android:layout_marginBottom="15dp"
-        android:backgroundTint="#454233"
+        android:backgroundTint="#434031"
         android:text="Продолжить "
         android:textSize="18sp"
+        app:cornerRadius="50dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

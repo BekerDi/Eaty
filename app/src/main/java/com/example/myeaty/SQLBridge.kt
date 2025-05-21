@@ -6,6 +6,22 @@ object SQLBridge {
         System.loadLibrary("native-lib")
     }
 
-    external fun nativeOpenDatabase(path: String)
-    external fun saveGenderNative(name: String, gender: Int)
+
+        external fun nativeOpenDatabase(path: String)
+        external fun nativeSaveUserName(name: String) // если используешь
+        external fun nativePrintAllUsers() //проверяем запись данных
+        external fun nativeSaveUserFullData(
+            age: Int,
+            weight: Int,
+            height: Int,
+            goal: Int,
+            activityLevel: Int,
+            password: String
+        )
+
+
 }
+
+
+
+
