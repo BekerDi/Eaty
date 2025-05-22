@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         loginButton.setOnClickListener {
             Toast.makeText(this, "Переход не реализован", Toast.LENGTH_SHORT).show()
         }
