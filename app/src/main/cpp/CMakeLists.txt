@@ -18,3 +18,8 @@ target_include_directories(native-lib PRIVATE
 target_link_libraries(native-lib
         sqlite3
         log)
+#Подключение к NDK? , чтобы на j-переменные не ругалась
+target_include_directories(native-lib PRIVATE
+        ${CMAKE_SYSROOT}/usr/include
+        sqlite)
+find_library(log-lib log)
