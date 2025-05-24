@@ -148,5 +148,22 @@ Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
     env->SetFloatArrayRegion(result, 0, 4, values);
 
     return result;
+    //Создаем таблицу для КБЖУ
+    const char* createKBJUTable = "CREATE TABLE IF NOT EXISTS KBJU ("
+                                  "user_id INTEGER PRIMARY KEY, "
+                                  "calories INTEGER, "
+                                  "proteins REAL, "
+                                  "fats REAL, "
+                                  "carbs REAL, "
+                                  "FOREIGN KEY(user_id) REFERENCES Users(id));";
+
+    char* errMsg = nullptr;
+    if (sqlite3_exec(db, createKBJUTable, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        LOGI("KBJU Table error: %s", errMsg);
+        sqlite3_free(errMsg);
+    } else {
+        LOGI("KBJU table is ready.");
+    }
+
 }
 
