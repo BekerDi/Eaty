@@ -55,9 +55,9 @@ class PasswordActivity : AppCompatActivity() {
 
             UserData.password = password
 
-            // Сохраняем в базу через C++
-            SQLBridge.nativeSaveUserFullData(
-                UserData.name ?:"",
+            // Сохраняем в базу и рассчитываем КБЖУ
+            val result = SQLBridge.saveUserAndCalculateKBJU(
+                UserData.name ?: "",
                 UserData.gender!!,
                 UserData.age!!,
                 UserData.weight!!,
@@ -67,8 +67,18 @@ class PasswordActivity : AppCompatActivity() {
                 password
             )
 
+            val calories = result[0]
+            val protein = result[1]
+            val fat = result[2]
+            val carbs = result[3]
+
+            val message = "КБЖУ рассчитаны:\nКкал: $calories\nБелки: $protein г\nЖиры: $fat г\nУглеводы: $carbs г"
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+
 
             Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show()
+
 
 
 
@@ -79,6 +89,8 @@ class PasswordActivity : AppCompatActivity() {
         super.onDestroy()
         SQLBridge.nativeCloseDatabase()
     }
+
+
 }
 
 

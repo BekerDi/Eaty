@@ -106,49 +106,39 @@ Java_com_example_myeaty_SQLBridge_nativeCloseDatabase(JNIEnv*, jobject) {
 extern "C"
 JNIEXPORT jfloatArray JNICALL
 Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
+                                                           jint userId,
                                                            jint gender, jint age,
                                                            jint weight, jint height,
                                                            jint goal, jint activityLevel) {
     float bmr;
-
-    // формула Миффлина-Сан Жеора
-    if (gender == 0) { // 0 - мужчина
+    if (gender == 0) {
         bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-    } else { // 1 - женщина
+    } else {
         bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     }
 
-    // Коэффициенты активности
     float activityMultiplier;
     switch (activityLevel) {
         case 1: activityMultiplier = 1.2f; break;
         case 2: activityMultiplier = 1.375f; break;
         case 3: activityMultiplier = 1.4f; break;
         case 4: activityMultiplier = 1.5f; break;
-        // максимум
         default: activityMultiplier = 1.2f; break;
     }
 
     float maintenanceCalories = bmr * activityMultiplier;
 
-    // Цель: 0 - сброс, 1 - поддержание, 2 - набор
     if (goal == 0) maintenanceCalories -= 300;
     else if (goal == 2) maintenanceCalories += 300;
 
-    // Расчёт БЖУ
-    float protein = weight * 1.8f; // 1.8 г/кг
-    float fat = weight * 1.0f;     // 1 г/кг
+    float protein = weight * 1.8f;
+    float fat = weight * 1.0f;
     float proteinCalories = protein * 4;
     float fatCalories = fat * 9;
     float remainingCalories = maintenanceCalories - (proteinCalories + fatCalories);
     float carbs = remainingCalories / 4;
 
-    jfloatArray result = env->NewFloatArray(4);
-    float values[4] = { maintenanceCalories, protein, fat, carbs };
-    env->SetFloatArrayRegion(result, 0, 4, values);
-
-    return result;
-    //Создаем таблицу для КБЖУ
+    // 🔧 Создаем таблицу KBJU
     const char* createKBJUTable = "CREATE TABLE IF NOT EXISTS KBJU ("
                                   "user_id INTEGER PRIMARY KEY, "
                                   "calories INTEGER, "
@@ -165,5 +155,52 @@ Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
         LOGI("KBJU table is ready.");
     }
 
+    // 🔧 Вставляем данные в таблицу KBJU
+    const char* insertSQL = "INSERT OR REPLACE INTO KBJU (user_id, calories, proteins, fats, carbs) VALUES (?, ?, ?, ?, ?);";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(db, insertSQL, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, userId);
+        sqlite3_bind_int(stmt, 2, static_cast<int>(maintenanceCalories));
+        sqlite3_bind_double(stmt, 3, protein);
+        sqlite3_bind_double(stmt, 4, fat);
+        sqlite3_bind_double(stmt, 5, carbs);
+
+        if (sqlite3_step(stmt) == SQLITE_DONE) {
+            LOGI("KBJU inserted successfully.");
+        } else {
+            LOGI("Failed to insert KBJU.");
+        }
+
+        sqlite3_finalize(stmt);
+    } else {
+        LOGI("Failed to prepare KBJU insert.");
+    }
+
+    // 🔁 Возвращаем результат
+    jfloatArray result = env->NewFloatArray(4);
+    float values[4] = { maintenanceCalories, protein, fat, carbs };
+    env->SetFloatArrayRegion(result, 0, 4, values);
+    return result;
 }
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_example_myeaty_SQLBridge_nativeGetLastUserId(JNIEnv*, jobject) {
+    if (!db) return -1;
+
+    const char* sql = "SELECT MAX(id) FROM Users;";
+    sqlite3_stmt* stmt;
+    int lastId = -1;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            lastId = sqlite3_column_int(stmt, 0);
+        }
+        sqlite3_finalize(stmt);
+    }
+
+    return lastId;
+}
+
 

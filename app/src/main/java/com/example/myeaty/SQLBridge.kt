@@ -40,4 +40,41 @@ object SQLBridge {
             isDbOpen = false
         }
     }
+    external fun nativeCalculateNutrition(
+        userId: Int,
+        gender: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int
+    ): FloatArray
+    fun saveUserAndCalculateKBJU(
+        name: String,
+        gender: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int,
+        password: String
+    ): FloatArray {
+        // 1. Сохраняем пользователя
+        nativeSaveUserFullData(name, gender, age, weight, height, goal, activityLevel, password)
+
+        // 2. Получаем последний ID пользователя
+         val userId = getLastInsertedUserId() // ← эту функцию нужно реализовать
+
+        // 3. Рассчитываем и сохраняем KBJU
+        return nativeCalculateNutrition(userId, gender, age, weight, height, goal, activityLevel)
+
+    }
+    private fun getLastInsertedUserId(): Int {
+        val userId = nativeGetLastUserId()
+        Log.i("MyEatyDebug", "Получен ID последнего пользователя: $userId")
+        return userId
+    }
+
+    external fun nativeGetLastUserId(): Int
+
 }
