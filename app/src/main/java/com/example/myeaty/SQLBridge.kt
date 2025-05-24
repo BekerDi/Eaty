@@ -11,6 +11,7 @@ object SQLBridge {
     external fun nativeOpenDatabase(path: String): Boolean  // исправлено: теперь возвращает Boolean
     external fun nativeSaveUserFullData(
         name: String,
+        gender: Int ,
         age: Int,
         weight: Int,
         height: Int,

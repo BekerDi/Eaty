@@ -58,6 +58,7 @@ class PasswordActivity : AppCompatActivity() {
             // Сохраняем в базу через C++
             SQLBridge.nativeSaveUserFullData(
                 UserData.name ?:"",
+                UserData.gender!!,
                 UserData.age!!,
                 UserData.weight!!,
                 UserData.height!!,
