@@ -33,13 +33,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextText"
+        tools:text="Пвроль" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="192dp"
         android:layout_height="76dp"
+        android:layout_marginStart="109dp"
+        android:layout_marginEnd="110dp"
+        android:layout_marginBottom="60dp"
         android:text="Button"
-        tools:layout_editor_absoluteX="109dp"
-        tools:layout_editor_absoluteY="595dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
