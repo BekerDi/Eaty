@@ -50,7 +50,9 @@ class MainActivity : AppCompatActivity() {
 
 
         loginButton.setOnClickListener {
-            Toast.makeText(this, "Переход не реализован", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
+
     }
 }
