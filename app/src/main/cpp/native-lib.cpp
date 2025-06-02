@@ -202,5 +202,34 @@ Java_com_example_myeaty_SQLBridge_nativeGetLastUserId(JNIEnv*, jobject) {
 
     return lastId;
 }
+extern "C"
+//Делаем запрос на имя и пароль, чтобы пользователь мог соврешить вход
+JNIEXPORT jint JNICALL
+Java_com_example_myeaty_SQLBridge_nativeLoginUser(JNIEnv* env, jobject,
+                                                  jstring jName, jstring jPassword) {
+    const char* name = env->GetStringUTFChars(jName, nullptr);
+    const char* password = env->GetStringUTFChars(jPassword, nullptr);
+
+    const char* sql = "SELECT id FROM Users WHERE name = ? AND password = ?;";
+    sqlite3_stmt* stmt;
+    int userId = -1;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, password, -1, SQLITE_STATIC);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            userId = sqlite3_column_int(stmt, 0);
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    env->ReleaseStringUTFChars(jName, name);
+    env->ReleaseStringUTFChars(jPassword, password);
+
+    return userId;
+}
+
 
 

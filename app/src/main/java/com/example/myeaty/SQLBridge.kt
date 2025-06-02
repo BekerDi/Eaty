@@ -76,5 +76,6 @@ object SQLBridge {
     }
 
     external fun nativeGetLastUserId(): Int
+    external fun nativeLoginUser(name: String, password: String): Int
 
 }
