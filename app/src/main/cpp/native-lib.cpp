@@ -284,7 +284,7 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
     sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(db, insertProductSQL, -1, &stmt, nullptr) == SQLITE_OK) {
-// Пример: Гречка 310/12/2/61
+
         struct Product {
             const char *name;
             float cal, prot, fat, carb;
@@ -349,4 +349,35 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
     } else {
         LOGI("Failed to prepare product insert.");
     }
+    // Создаем таблицу Meal
+    const char* createMealTableSQL = "CREATE TABLE IF NOT EXISTS Meal ("
+                                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                     "user INTEGER, "
+                                     "date TEXT, "
+                                     "mealType TEXT, "
+                                     "FOREIGN KEY(user) REFERENCES Users(id));";
+
+    if (sqlite3_exec(db, createMealTableSQL, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        LOGI("Failed to create Meal table: %s", errMsg);
+        sqlite3_free(errMsg);
+    } else {
+        LOGI("Meal table created.");
+    }
+
+// Создаем таблицу FoodEntry
+    const char* createFoodEntrySQL = "CREATE TABLE IF NOT EXISTS FoodEntry ("
+                                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                     "meal_id INTEGER, "
+                                     "product_id INTEGER, "
+                                     "portion_size REAL, "
+                                     "FOREIGN KEY(meal_id) REFERENCES Meal(id), "
+                                     "FOREIGN KEY(product_id) REFERENCES Products(id));";
+
+    if (sqlite3_exec(db, createFoodEntrySQL, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        LOGI("Failed to create FoodEntry table: %s", errMsg);
+        sqlite3_free(errMsg);
+    } else {
+        LOGI("FoodEntry table created.");
+    }
+
 }
