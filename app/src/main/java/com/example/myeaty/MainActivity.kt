@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         val dbPath = DatabaseHelper.copyDatabaseFromAssets(this, "MyEaty.db")
         SQLBridge.nativeOpenDatabase(dbPath)
         val dbFile = File(dbPath)
+        SQLBridge.nativeInitProductDatabase()
 
         if (dbFile.exists()) {
             Toast.makeText(this, "База данных MyEaty существует", Toast.LENGTH_SHORT).show()
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
 
     }
 }

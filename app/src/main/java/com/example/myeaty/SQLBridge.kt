@@ -77,5 +77,10 @@ object SQLBridge {
 
     external fun nativeGetLastUserId(): Int
     external fun nativeLoginUser(name: String, password: String): Int
+    external fun nativeGetKBJUForUser(userId: Int): FloatArray
+    external fun nativeInitProductDatabase()
+
+
+
 
 }

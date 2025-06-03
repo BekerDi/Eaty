@@ -230,6 +230,123 @@ Java_com_example_myeaty_SQLBridge_nativeLoginUser(JNIEnv* env, jobject,
 
     return userId;
 }
+//Возвращаем КБЖУ авторизованного пользователя
+extern "C"
+JNIEXPORT jfloatArray JNICALL
+Java_com_example_myeaty_SQLBridge_nativeGetKBJUForUser(JNIEnv* env, jobject, jint userId) {
+    if (!db) return nullptr;
 
+    const char* sql = "SELECT calories, proteins, fats, carbs FROM KBJU WHERE user_id = ?;";
+    sqlite3_stmt* stmt;
 
+    jfloatArray result = env->NewFloatArray(4);
+    float values[4] = {0, 0, 0, 0}; // default
 
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, userId);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            values[0] = static_cast<float>(sqlite3_column_int(stmt, 0));
+            values[1] = static_cast<float>(sqlite3_column_double(stmt, 1));
+            values[2] = static_cast<float>(sqlite3_column_double(stmt, 2));
+            values[3] = static_cast<float>(sqlite3_column_double(stmt, 3));
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    env->SetFloatArrayRegion(result, 0, 4, values);
+    return result;
+}
+//Создаем таблицу с продуктами
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject) {
+    if (!db) return;
+    const char *createProductsTableSQL = "CREATE TABLE IF NOT EXISTS Products ("
+                                         "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                         "name TEXT UNIQUE, "
+                                         "calories_per_100g REAL, "
+                                         "protein_per_100g REAL, "
+                                         "fat_per_100g REAL, "
+                                         "carb_per_100g REAL);";
+    char *errMsg = nullptr;
+    if (sqlite3_exec(db, createProductsTableSQL, nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        LOGI("Failed to create Products table: %s", errMsg);
+        sqlite3_free(errMsg);
+    } else {
+        LOGI("Products table created successfully.");
+    }
+
+    const char *insertProductSQL = "INSERT OR IGNORE INTO Products "
+                                   "(name, calories_per_100g, protein_per_100g, fat_per_100g, carb_per_100g) "
+                                   "VALUES (?, ?, ?, ?, ?);";
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, insertProductSQL, -1, &stmt, nullptr) == SQLITE_OK) {
+// Пример: Гречка 310/12/2/61
+        struct Product {
+            const char *name;
+            float cal, prot, fat, carb;
+        };
+
+        Product products[] = {
+                {"Гречка",      310, 12,   2,    61},
+                {"Рис",         323, 7,    0,    73},
+                {"Пшено",       334, 12,   2,    69},
+                {"Чечевица",    310, 24,   1,    53},
+                {"Геркулес",    355, 13,   6,    66},
+                {"Кукурузная ", 325, 8.0,  1.0,  75.0},
+                {"Макароны ",   335, 10.0, 1.0,  69.0},
+                {"Булгур",      342, 12.0, 1.0,  58.0},
+                {"Кабачок",     24,  0.6,  0.6,  4.6},
+                {"Картофель",   80,  2.0,  0.4,  18.0},
+                {"Огурец",      15,  0.8,  0.1,  2.8},
+                {"Пастернак",   47,  1.4,  0.5,  9.2},
+                {"Помидоры",    20,  0.6,  0.2,  4.2},
+                {"Тыква",       22,  1.0,  0.1,  4.4},
+                {"Банан",       89,  2.0,  0.0,  22.0},
+                {"Яблоко",      47,  0.0,  0.0,  10.0},
+                {"Груша",       42,  0.0,  0.0,  11.0},
+                {"Авокадо ",    200, 2.0,  20.0, 7.0},
+                {"Яйцо",        157, 12.7, 11.5, 0.7},
+                {"Молоко 2,5%", 53,  2.8,  2.5,  4.6},
+                {"Молоко 3,2%", 58,  2.8,  3.2,  4.6},
+                {"Кефир 1%",    37,  2.8,  1.0,  4.0},
+                {"Кефир 2,5%",  51,  3.0,  2.5,  4.0},
+                {"Кефир 3,2%",  58,  3.2,  3.2,  4.1},
+                {"Творог 0,5%", 71,  16.0, 0.5,  1.0},
+                {"Творог 5%",   121, 17.2, 5.0,  1.8},
+                {"Творог 9%",   159, 16.7, 9.0,  2.0},
+                {"Курица",      110, 23.0, 1.2,  0.0},
+                {"Индейка",     84,  19.2, 0.7,  0.0},
+                {"Баранина",    209, 15.6, 16.3, 0.0},
+                {"Говядина",    187, 18.9, 12.4, 0.0},
+                {"Свинина",     259, 16.0, 21.6, 0.0},
+                {"Конина",      187, 20.2, 7.0,  0.0},
+                {"Горбуша",     140, 20.0, 6.0,  0.0},
+                {"Семга",       225, 21.0, 15.0, 0.0},
+                {"Тунец",       108, 23.0, 1.0,  0.0},
+                {"Минтай",      81,  17.0, 0.8,  0.0}
+
+        };
+
+        for (auto &p: products) {
+            sqlite3_bind_text(stmt, 1, p.name, -1, SQLITE_STATIC);
+            sqlite3_bind_double(stmt, 2, p.cal);
+            sqlite3_bind_double(stmt, 3, p.prot);
+            sqlite3_bind_double(stmt, 4, p.fat);
+            sqlite3_bind_double(stmt, 5, p.carb);
+
+            if (sqlite3_step(stmt) != SQLITE_DONE) {
+                LOGI("Failed to insert product: %s", p.name);
+            }
+            sqlite3_reset(stmt);
+        }
+
+        sqlite3_finalize(stmt);
+        LOGI("Products inserted.");
+    } else {
+        LOGI("Failed to prepare product insert.");
+    }
+}
