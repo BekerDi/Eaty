@@ -17,6 +17,12 @@ class DnevnikActivity : AppCompatActivity() {
 
     private lateinit var txtEaten: TextView
 
+    private var totalCalories = 0f
+    private var totalProtein = 0f
+    private var totalFat = 0f
+    private var totalCarbs = 0f
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,6 +45,15 @@ class DnevnikActivity : AppCompatActivity() {
             finish()
             return
         }
+        val kbjuArray = SQLBridge.nativeGetKBJUForUser(userId)
+        val normCalories = kbjuArray[0]
+        val normProtein = kbjuArray[1]
+        val normFat = kbjuArray[2]
+        val normCarbs = kbjuArray[3]
+
+        val txtNorm = findViewById<TextView>(R.id.txt_kbju_total)
+        txtNorm.text = "К: ${normCalories.toInt()}  Б: ${normProtein.toInt()}  Ж: ${normFat.toInt()}  У: ${normCarbs.toInt()}"
+
 
         val products = try {
             val result = SQLBridge.getAllProducts()
@@ -108,6 +123,15 @@ class DnevnikActivity : AppCompatActivity() {
                     val prot = product.proteinPer100g * weight / 100
                     val fat = product.fatPer100g * weight / 100
                     val carb = product.carbPer100g * weight / 100
+
+                    //тут у нас про съеденное
+                    totalCalories += cal
+                    totalProtein += prot
+                    totalFat += fat
+                    totalCarbs += carb
+
+                    txtEaten.text = "Съедено: К: ${totalCalories.toInt()} Б: ${totalProtein.toInt()} Ж: ${totalFat.toInt()} У: ${totalCarbs.toInt()}"
+
 
 
 

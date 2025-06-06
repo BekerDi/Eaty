@@ -77,8 +77,9 @@ android:background="#A8B3A5">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@drawable/bg_meal_input"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:paddingEnd="8dp">
+
 
             <ImageButton
                 android:id="@+id/btn_add_breakfast"
@@ -111,8 +112,8 @@ android:background="#A8B3A5">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_meal_input"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:paddingEnd="8dp">
 
             <ImageButton
                 android:id="@+id/btn_add_snack"
@@ -145,8 +146,8 @@ android:background="#A8B3A5">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_meal_input"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:paddingEnd="8dp">
 
             <ImageButton
                 android:id="@+id/btn_add_lunch"
@@ -179,8 +180,8 @@ android:background="#A8B3A5">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_meal_input"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:paddingEnd="8dp">
 
             <ImageButton
                 android:id="@+id/btn_add_afternoon"
@@ -213,8 +214,8 @@ android:background="#A8B3A5">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/bg_meal_input"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:paddingEnd="8dp">
 
             <ImageButton
                 android:id="@+id/btn_add_dinner"
