@@ -2,22 +2,18 @@ package com.example.myeaty
 
 import android.os.Bundle
 import android.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.myeaty.Product
 
 class DnevnikActivity : AppCompatActivity() {
 
     private var userId: Int = -1
-
-    // Суммарные значения КБЖУ
-    private var totalCalories = 0f
-    private var totalProtein = 0f
-    private var totalFat = 0f
-    private var totalCarbs = 0f
 
     private lateinit var txtEaten: TextView
 
@@ -32,7 +28,27 @@ class DnevnikActivity : AppCompatActivity() {
             insets
         }
 
-        val products = SQLBridge.getAllProducts()
+        Log.d("DnevnikDebug", "onCreate стартовал")
+
+        // Получение userId из Intent
+        userId = intent.getIntExtra("userId", -1)
+        Log.d("DnevnikDebug", "userId из Intent = $userId")
+
+        if (userId == -1) {
+            Toast.makeText(this, "Ошибка входа: userId не получен", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        val products = try {
+            val result = SQLBridge.getAllProducts()
+            Log.d("DnevnikDebug", "Получено продуктов: ${result.size}")
+            result
+        } catch (e: Exception) {
+            Log.e("DnevnikDebug", "Ошибка при получении продуктов", e)
+            Toast.makeText(this, "Ошибка при загрузке продуктов", Toast.LENGTH_SHORT).show()
+            emptyList()
+        }
 
         txtEaten = findViewById(R.id.txt_kbju_eaten)
 
@@ -51,19 +67,15 @@ class DnevnikActivity : AppCompatActivity() {
         btnAddBreakfast.setOnClickListener {
             showProductDialog("Завтрак", products, breakfastContainer)
         }
-
         btnAddSnack.setOnClickListener {
             showProductDialog("Перекус", products, snackContainer)
         }
-
         btnAddLunch.setOnClickListener {
             showProductDialog("Обед", products, lunchContainer)
         }
-
         btnAddAfternoon.setOnClickListener {
             showProductDialog("Полдник", products, afternoonContainer)
         }
-
         btnAddDinner.setOnClickListener {
             showProductDialog("Ужин", products, dinnerContainer)
         }
@@ -97,15 +109,8 @@ class DnevnikActivity : AppCompatActivity() {
                     val fat = product.fatPer100g * weight / 100
                     val carb = product.carbPer100g * weight / 100
 
-                    // Обновляем суммарное КБЖУ
-                    totalCalories += cal
-                    totalProtein += prot
-                    totalFat += fat
-                    totalCarbs += carb
 
-                    txtEaten.text = "Съедено: К: ${totalCalories.toInt()}  Б: ${totalProtein.toInt()}  Ж: ${totalFat.toInt()}  У: ${totalCarbs.toInt()}"
 
-                    // Создаём карточку-продукт
                     val productBlock = RelativeLayout(this).apply {
                         setBackgroundResource(R.drawable.bg_meal_input)
                         val layoutParams = LinearLayout.LayoutParams(

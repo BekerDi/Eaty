@@ -1,6 +1,7 @@
 package com.example.myeaty
 
 import android.util.Log
+import com.example.myeaty.Product
 
 object SQLBridge {
 
