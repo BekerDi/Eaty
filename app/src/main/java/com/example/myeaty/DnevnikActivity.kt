@@ -11,7 +11,15 @@ import androidx.core.view.WindowInsetsCompat
 
 class DnevnikActivity : AppCompatActivity() {
 
-    private var userId: Int = -1  // Пример: подставь реальный userId из login/session
+    private var userId: Int = -1 // подставь свой userId при необходимости
+
+    // Суммы КБЖУ
+    private var totalCalories = 0f
+    private var totalProtein = 0f
+    private var totalFat = 0f
+    private var totalCarbs = 0f
+
+    private lateinit var txtEaten: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +32,19 @@ class DnevnikActivity : AppCompatActivity() {
             insets
         }
 
-        // Получаем список продуктов из SQLBridge
         val products = SQLBridge.getAllProducts()
 
-        // Подключаем кнопки и контейнеры
+        // Найти TextView для отображения съеденного КБЖУ
+        txtEaten = findViewById(R.id.txt_kbju_eaten)
+
+        // Кнопки
         val btnAddBreakfast = findViewById<ImageButton>(R.id.btn_add_breakfast)
         val btnAddSnack = findViewById<ImageButton>(R.id.btn_add_snack)
         val btnAddLunch = findViewById<ImageButton>(R.id.btn_add_lunch)
         val btnAddAfternoon = findViewById<ImageButton>(R.id.btn_add_afternoon)
         val btnAddDinner = findViewById<ImageButton>(R.id.btn_add_dinner)
 
+        // Контейнеры
         val breakfastContainer = findViewById<LinearLayout>(R.id.breakfast_container)
         val snackContainer = findViewById<LinearLayout>(R.id.snack_container)
         val lunchContainer = findViewById<LinearLayout>(R.id.lunch_container)
@@ -90,30 +101,21 @@ class DnevnikActivity : AppCompatActivity() {
                     val fat = product.fatPer100g * weight / 100
                     val carb = product.carbPer100g * weight / 100
 
-                    // Создаём контейнер с фоном bg_meal_input
-                    val productBlock = RelativeLayout(this).apply {
-                        setBackgroundResource(R.drawable.bg_meal_input)
-                        val layoutParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        ).apply {
-                            setMargins(0, 8, 0, 8)
-                        }
-                        this.layoutParams = layoutParams
-                        setPadding(24, 24, 24, 24)
-                    }
+                    // Обновляем итоговые значения
+                    totalCalories += cal
+                    totalProtein += prot
+                    totalFat += fat
+                    totalCarbs += carb
 
-                    val productText = TextView(this).apply {
-                        text = "${product.name} - ${weight}г\nК: ${cal.toInt()} Б: ${prot.toInt()} Ж: ${fat.toInt()} У: ${carb.toInt()})"
-                        textSize = 14f
-                        setTextColor(resources.getColor(android.R.color.black))
-                    }
+                    // Обновляем текст сверху
+                    txtEaten.text = "Съедено: К: ${totalCalories.toInt()}  Б: ${totalProtein.toInt()}  Ж: ${totalFat.toInt()}  У: ${totalCarbs.toInt()}"
 
-                    productBlock.addView(productText)
-                    container.addView(productBlock)
+                    // Отображение в контейнере
+                    val textView = TextView(this)
+                    textView.text = "${product.name} - ${weight}г (К: ${cal.toInt()} Б: ${prot.toInt()} Ж: ${fat.toInt()} У: ${carb.toInt()})"
+                    container.addView(textView)
 
-
-                    // TODO: bridge.saveFoodEntry(mealId, product.id, weight)
+                    // Можно добавить сохранение в БД
                 }
             }
             .setNegativeButton("Отмена", null)
