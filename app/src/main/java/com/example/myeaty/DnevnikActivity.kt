@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 
 class DnevnikActivity : AppCompatActivity() {
 
-    private var userId: Int = -1 // подставь свой userId при необходимости
+    private var userId: Int = -1 //
 
     // Суммы КБЖУ
     private var totalCalories = 0f
