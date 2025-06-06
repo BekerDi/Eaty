@@ -8,10 +8,10 @@ object SQLBridge {
         System.loadLibrary("native-lib")
     }
 
-    external fun nativeOpenDatabase(path: String): Boolean  // исправлено: теперь возвращает Boolean
+    external fun nativeOpenDatabase(path: String): Boolean
     external fun nativeSaveUserFullData(
         name: String,
-        gender: Int ,
+        gender: Int,
         age: Int,
         weight: Int,
         height: Int,
@@ -20,6 +20,21 @@ object SQLBridge {
         password: String
     )
     external fun nativeCloseDatabase()
+    external fun nativeCalculateNutrition(
+        userId: Int,
+        gender: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int
+    ): FloatArray
+
+    external fun nativeGetLastUserId(): Int
+    external fun nativeLoginUser(name: String, password: String): Int
+    external fun nativeGetKBJUForUser(userId: Int): FloatArray
+    external fun nativeInitProductDatabase()
+    external fun nativeGetAllProducts(): Array<Product>
 
     private var isDbOpen = false
 
@@ -40,15 +55,7 @@ object SQLBridge {
             isDbOpen = false
         }
     }
-    external fun nativeCalculateNutrition(
-        userId: Int,
-        gender: Int,
-        age: Int,
-        weight: Int,
-        height: Int,
-        goal: Int,
-        activityLevel: Int
-    ): FloatArray
+
     fun saveUserAndCalculateKBJU(
         name: String,
         gender: Int,
@@ -59,28 +66,18 @@ object SQLBridge {
         activityLevel: Int,
         password: String
     ): FloatArray {
-        // 1. Сохраняем пользователя
         nativeSaveUserFullData(name, gender, age, weight, height, goal, activityLevel, password)
-
-        // 2. Получаем последний ID пользователя
-         val userId = getLastInsertedUserId() // ← эту функцию нужно реализовать
-
-        // 3. Рассчитываем и сохраняем KBJU
+        val userId = getLastInsertedUserId()
         return nativeCalculateNutrition(userId, gender, age, weight, height, goal, activityLevel)
-
     }
+
     private fun getLastInsertedUserId(): Int {
         val userId = nativeGetLastUserId()
         Log.i("MyEatyDebug", "Получен ID последнего пользователя: $userId")
         return userId
     }
 
-    external fun nativeGetLastUserId(): Int
-    external fun nativeLoginUser(name: String, password: String): Int
-    external fun nativeGetKBJUForUser(userId: Int): FloatArray
-    external fun nativeInitProductDatabase()
-
-
-
-
+    fun getAllProducts(): List<Product> {
+        return nativeGetAllProducts().toList()
+    }
 }

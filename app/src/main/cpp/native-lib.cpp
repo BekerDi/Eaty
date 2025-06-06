@@ -2,6 +2,8 @@
 #include <string>
 #include <sqlite3.h>
 #include <android/log.h>
+#include <vector>
+
 
 #define LOG_TAG "MyEatyDebug"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -378,6 +380,56 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
         sqlite3_free(errMsg);
     } else {
         LOGI("FoodEntry table created.");
+    }}
+//обращаемся чтобы извлекать пролдукты
+    extern "C"
+    JNIEXPORT jobjectArray JNICALL
+    Java_com_example_myeaty_SQLBridge_nativeGetAllProducts(JNIEnv* env, jobject) {
+        if (!db) return nullptr;
+
+        const char* sql = "SELECT id, name, calories_per_100g, protein_per_100g, fat_per_100g, carb_per_100g FROM Products;";
+        sqlite3_stmt* stmt;
+
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            LOGI("Failed to prepare SELECT from Products.");
+            return nullptr;
+        }
+
+        jclass productClass = env->FindClass("com/example/myeaty/Product");
+        if (!productClass) {
+            LOGI("Can't find Product class.");
+            return nullptr;
+        }
+
+        jmethodID ctor = env->GetMethodID(productClass, "<init>", "(ILjava/lang/String;FFFF)V");
+        if (!ctor) {
+            LOGI("Can't find Product constructor.");
+            return nullptr;
+        }
+
+        std::vector<jobject> products;
+
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            jint id = sqlite3_column_int(stmt, 0);
+            const char* nameC = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            jstring name = env->NewStringUTF(nameC);
+
+            jfloat cal = sqlite3_column_double(stmt, 2);
+            jfloat prot = sqlite3_column_double(stmt, 3);
+            jfloat fat = sqlite3_column_double(stmt, 4);
+            jfloat carb = sqlite3_column_double(stmt, 5);
+
+            jobject product = env->NewObject(productClass, ctor, id, name, cal, prot, fat, carb);
+            products.push_back(product);
+        }
+
+        sqlite3_finalize(stmt);
+
+        jobjectArray array = env->NewObjectArray(products.size(), productClass, nullptr);
+        for (size_t i = 0; i < products.size(); ++i) {
+            env->SetObjectArrayElement(array, i, products[i]);
+        }
+
+        return array;
     }
 
-}

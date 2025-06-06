@@ -1,165 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#A8B3A5"
-    tools:context=".DnevnikActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#A8B3A5">
 
-    <!-- Заголовок -->
-    <TextView
-        android:id="@+id/txt_dnevnik"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Дневник"
-        android:textSize="17pt"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="64dp" />
 
-    <!-- Карточка с КБЖУ -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/kbju_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/txt_dnevnik"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="К: 2000  Б: 120  Ж: 70  У: 220" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Съедено: К: 0  Б: 0  Ж: 0  У: 0" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Блок "Завтрак" -->
-    <LinearLayout
-        android:id="@+id/layout_breakfast_block"
-        android:layout_width="0dp"
+<LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/kbju_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:padding="16dp">
 
-        <!-- Панель с текстом и кнопкой -->
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/txt_dnevnik"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Дневник"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:layout_marginTop="48dp" />
+
+        <!-- Дата -->
+        <TextView
+            android:id="@+id/txt_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="01 июня 2025"
+            android:textSize="16sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- КБЖУ -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/txt_kbju_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="К: 2000  Б: 120  Ж: 70  У: 220" />
+
+                <TextView
+                    android:id="@+id/txt_kbju_eaten"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Съедено: К: 0  Б: 0  Ж: 0  У: 0" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ====== Приемы пищи ====== -->
+
+        <!-- Завтрак -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Завтрак"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
         <RelativeLayout
-            android:background="@drawable/bg_meal_input"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_meal_input"
             android:layout_marginBottom="4dp">
-
-            <TextView
-                android:id="@+id/label_breakfast"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="Завтрак"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="#000000" />
 
             <ImageButton
                 android:id="@+id/btn_add_breakfast"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 android:src="@drawable/iconplus"
-                android:contentDescription="Добавить продукт" />
+                android:contentDescription="Добавить завтрак" />
         </RelativeLayout>
 
-        <!-- Контейнер для добавляемых продуктов -->
         <LinearLayout
             android:id="@+id/breakfast_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Блок "Перекус" -->
-    <LinearLayout
-        android:id="@+id/layout_snack_block"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/layout_breakfast_block"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- Перекус -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Перекус"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
 
-        <!-- Панель с текстом и кнопкой -->
         <RelativeLayout
-            android:background="@drawable/bg_meal_input"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_meal_input"
             android:layout_marginBottom="4dp">
-
-            <TextView
-                android:id="@+id/label_snack"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="Перекус"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="#000000" />
 
             <ImageButton
                 android:id="@+id/btn_add_snack"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 android:src="@drawable/iconplus"
-                android:contentDescription="Добавить продукт" />
+                android:contentDescription="Добавить перекус" />
         </RelativeLayout>
 
-        <!-- Контейнер для добавляемых продуктов -->
         <LinearLayout
             android:id="@+id/snack_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Обед -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Обед"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_meal_input"
+            android:layout_marginBottom="4dp">
+
+            <ImageButton
+                android:id="@+id/btn_add_lunch"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/iconplus"
+                android:contentDescription="Добавить обед" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/lunch_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Полдник -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Полдник"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_meal_input"
+            android:layout_marginBottom="4dp">
+
+            <ImageButton
+                android:id="@+id/btn_add_afternoon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/iconplus"
+                android:contentDescription="Добавить полдник" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/afternoon_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Ужин -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ужин"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_meal_input"
+            android:layout_marginBottom="4dp">
+
+            <ImageButton
+                android:id="@+id/btn_add_dinner"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/iconplus"
+                android:contentDescription="Добавить ужин" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/dinner_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp" />
+
     </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
