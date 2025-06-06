@@ -1,20 +1,122 @@
 package com.example.myeaty
 
 import android.os.Bundle
+import android.app.AlertDialog
+import android.view.LayoutInflater
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class DnevnikActivity : AppCompatActivity() {
+
+    private var userId: Int = -1  // Пример: подставь реальный userId из login/session
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dnevnik)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Получаем список продуктов из SQLBridge
+        val products = SQLBridge.getAllProducts()
+
+        // Подключаем кнопки и контейнеры
+        val btnAddBreakfast = findViewById<ImageButton>(R.id.btn_add_breakfast)
+        val btnAddSnack = findViewById<ImageButton>(R.id.btn_add_snack)
+        val btnAddLunch = findViewById<ImageButton>(R.id.btn_add_lunch)
+        val btnAddAfternoon = findViewById<ImageButton>(R.id.btn_add_afternoon)
+        val btnAddDinner = findViewById<ImageButton>(R.id.btn_add_dinner)
+
+        val breakfastContainer = findViewById<LinearLayout>(R.id.breakfast_container)
+        val snackContainer = findViewById<LinearLayout>(R.id.snack_container)
+        val lunchContainer = findViewById<LinearLayout>(R.id.lunch_container)
+        val afternoonContainer = findViewById<LinearLayout>(R.id.afternoon_container)
+        val dinnerContainer = findViewById<LinearLayout>(R.id.dinner_container)
+
+        // Назначаем обработчики
+        btnAddBreakfast.setOnClickListener {
+            showProductDialog("Завтрак", products, breakfastContainer)
+        }
+
+        btnAddSnack.setOnClickListener {
+            showProductDialog("Перекус", products, snackContainer)
+        }
+
+        btnAddLunch.setOnClickListener {
+            showProductDialog("Обед", products, lunchContainer)
+        }
+
+        btnAddAfternoon.setOnClickListener {
+            showProductDialog("Полдник", products, afternoonContainer)
+        }
+
+        btnAddDinner.setOnClickListener {
+            showProductDialog("Ужин", products, dinnerContainer)
+        }
+    }
+
+    private fun showProductDialog(
+        mealType: String,
+        products: List<Product>,
+        container: LinearLayout
+    ) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_product, null)
+        val spinner = dialogView.findViewById<Spinner>(R.id.spinner_products)
+        val inputWeight = dialogView.findViewById<EditText>(R.id.input_weight)
+
+        val productNames = products.map { it.name }
+        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, productNames)
+
+        AlertDialog.Builder(this)
+            .setTitle("Добавить продукт в \"$mealType\"")
+            .setView(dialogView)
+            .setPositiveButton("Добавить") { _, _ ->
+                val selectedIndex = spinner.selectedItemPosition
+                val weightText = inputWeight.text.toString()
+
+                if (selectedIndex >= 0 && weightText.isNotBlank()) {
+                    val product = products[selectedIndex]
+                    val weight = weightText.toFloat()
+
+                    val cal = product.caloriesPer100g * weight / 100
+                    val prot = product.proteinPer100g * weight / 100
+                    val fat = product.fatPer100g * weight / 100
+                    val carb = product.carbPer100g * weight / 100
+
+                    // Создаём контейнер с фоном bg_meal_input
+                    val productBlock = RelativeLayout(this).apply {
+                        setBackgroundResource(R.drawable.bg_meal_input)
+                        val layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            setMargins(0, 8, 0, 8)
+                        }
+                        this.layoutParams = layoutParams
+                        setPadding(24, 24, 24, 24)
+                    }
+
+                    val productText = TextView(this).apply {
+                        text = "${product.name} - ${weight}г\nК: ${cal.toInt()} Б: ${prot.toInt()} Ж: ${fat.toInt()} У: ${carb.toInt()})"
+                        textSize = 14f
+                        setTextColor(resources.getColor(android.R.color.black))
+                    }
+
+                    productBlock.addView(productText)
+                    container.addView(productBlock)
+
+
+                    // TODO: bridge.saveFoodEntry(mealId, product.id, weight)
+                }
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 }
