@@ -2,6 +2,7 @@ package com.example.myeaty
 
 import android.os.Bundle
 import android.app.AlertDialog
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.*
@@ -9,7 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.myeaty.Product
+import com.example.myeaty.Products
 
 class DnevnikActivity : AppCompatActivity() {
 
@@ -33,6 +34,13 @@ class DnevnikActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val btnEditProfile = findViewById<Button>(R.id.btn_edit_profile)
+        btnEditProfile.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            intent.putExtra("userId", userId)  // если нужно передавать ID
+            startActivity(intent)
+        }
+
 
         Log.d("DnevnikDebug", "onCreate стартовал")
 
@@ -98,25 +106,42 @@ class DnevnikActivity : AppCompatActivity() {
 
     private fun showProductDialog(
         mealType: String,
-        products: List<Product>,
+        products: List<Products>,
         container: LinearLayout
     ) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_product, null)
-        val spinner = dialogView.findViewById<Spinner>(R.id.spinner_products)
+        val searchInput = dialogView.findViewById<AutoCompleteTextView>(R.id.input_product_search)
         val inputWeight = dialogView.findViewById<EditText>(R.id.input_weight)
 
         val productNames = products.map { it.name }
-        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, productNames)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, productNames)
+        searchInput.setAdapter(adapter)
+
+        // Добавляем TextWatcher для обновления списка при вводе
+        searchInput.addTextChangedListener(object : android.text.TextWatcher {
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val query = s.toString().lowercase()
+                val filteredNames = productNames.filter { it.lowercase().contains(query) }
+
+                val filteredAdapter = ArrayAdapter(this@DnevnikActivity, android.R.layout.simple_dropdown_item_1line, filteredNames)
+                searchInput.setAdapter(filteredAdapter)
+                searchInput.showDropDown()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
 
         AlertDialog.Builder(this)
             .setTitle("Добавить продукт в \"$mealType\"")
             .setView(dialogView)
             .setPositiveButton("Добавить") { _, _ ->
-                val selectedIndex = spinner.selectedItemPosition
+                val selectedName = searchInput.text.toString().trim()
                 val weightText = inputWeight.text.toString()
 
-                if (selectedIndex >= 0 && weightText.isNotBlank()) {
-                    val product = products[selectedIndex]
+                val product = products.find { it.name.equals(selectedName, ignoreCase = true) }
+
+                if (product != null && weightText.isNotBlank()) {
                     val weight = weightText.toFloat()
 
                     val cal = product.caloriesPer100g * weight / 100
@@ -124,7 +149,6 @@ class DnevnikActivity : AppCompatActivity() {
                     val fat = product.fatPer100g * weight / 100
                     val carb = product.carbPer100g * weight / 100
 
-                    //тут у нас про съеденное
                     totalCalories += cal
                     totalProtein += prot
                     totalFat += fat
@@ -132,18 +156,14 @@ class DnevnikActivity : AppCompatActivity() {
 
                     txtEaten.text = "Съедено: К: ${totalCalories.toInt()} Б: ${totalProtein.toInt()} Ж: ${totalFat.toInt()} У: ${totalCarbs.toInt()}"
 
-
-
-
                     val productBlock = RelativeLayout(this).apply {
                         setBackgroundResource(R.drawable.bg_meal_input)
-                        val layoutParams = LinearLayout.LayoutParams(
+                        layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                         ).apply {
                             setMargins(0, 8, 0, 8)
                         }
-                        this.layoutParams = layoutParams
                         setPadding(24, 24, 24, 24)
                     }
 
@@ -155,9 +175,13 @@ class DnevnikActivity : AppCompatActivity() {
 
                     productBlock.addView(productText)
                     container.addView(productBlock)
+                } else {
+                    Toast.makeText(this, "Выберите продукт и введите вес", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Отмена", null)
             .show()
+
     }
+
 }

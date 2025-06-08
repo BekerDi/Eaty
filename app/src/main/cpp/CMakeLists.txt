@@ -23,3 +23,11 @@ target_include_directories(native-lib PRIVATE
         ${CMAKE_SYSROOT}/usr/include
         sqlite)
 find_library(log-lib log)
+#чтоб редактировать данные
+find_library(log-lib log)
+target_link_libraries( # Specifies the target library.
+        native-lib
+        ${log-lib}
+        android
+        jnigraphics)
+

@@ -1,7 +1,6 @@
 package com.example.myeaty
 
 import android.util.Log
-import com.example.myeaty.Product
 
 object SQLBridge {
 
@@ -9,7 +8,9 @@ object SQLBridge {
         System.loadLibrary("native-lib")
     }
 
+    // 🔧 Нативные методы
     external fun nativeOpenDatabase(path: String): Boolean
+    external fun nativeCloseDatabase()
     external fun nativeSaveUserFullData(
         name: String,
         gender: Int,
@@ -20,7 +21,6 @@ object SQLBridge {
         activityLevel: Int,
         password: String
     )
-    external fun nativeCloseDatabase()
     external fun nativeCalculateNutrition(
         userId: Int,
         gender: Int,
@@ -35,8 +35,19 @@ object SQLBridge {
     external fun nativeLoginUser(name: String, password: String): Int
     external fun nativeGetKBJUForUser(userId: Int): FloatArray
     external fun nativeInitProductDatabase()
-    external fun nativeGetAllProducts(): Array<Product>
+    external fun nativeGetAllProducts(): Array<Products>
 
+    external fun nativeGetUserProfile(userId: Int): UserProfile
+    external fun nativeUpdateUserProfile(
+        userId: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int
+    )
+
+    // 🔧 Состояние базы
     private var isDbOpen = false
 
     fun openDatabaseWithLog(path: String) {
@@ -57,6 +68,7 @@ object SQLBridge {
         }
     }
 
+    // 🔧 Сохранение + пересчёт КБЖУ
     fun saveUserAndCalculateKBJU(
         name: String,
         gender: Int,
@@ -78,7 +90,52 @@ object SQLBridge {
         return userId
     }
 
-    fun getAllProducts(): List<Product> {
+    // 🔧 Работа с продуктами
+    fun getAllProducts(): List<Products> {
         return nativeGetAllProducts().toList()
+    }
+
+    // 🔧 Получение профиля
+    fun getUserProfile(userId: Int): UserProfile {
+        return nativeGetUserProfile(userId)
+    }
+
+    // 🔧 Обновление профиля без пересчёта (оставляем для совместимости)
+    fun updateUserProfile(
+        userId: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int
+    ) {
+        nativeUpdateUserProfile(userId, age, weight, height, goal, activityLevel)
+    }
+
+    // 🔁 Обновление и пересчёт (если есть gender)
+    fun updateUserProfileAndRecalculate(
+        userId: Int,
+        gender: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int
+    ): FloatArray {
+        nativeUpdateUserProfile(userId, age, weight, height, goal, activityLevel)
+        return nativeCalculateNutrition(userId, gender, age, weight, height, goal, activityLevel)
+    }
+
+    // 🔁 Обновление и пересчёт (автоопределение gender)
+    fun updateUserProfileWithFetchAndRecalculate(
+        userId: Int,
+        age: Int,
+        weight: Int,
+        height: Int,
+        goal: Int,
+        activityLevel: Int
+    ): FloatArray {
+        val gender = getUserProfile(userId).gender
+        return updateUserProfileAndRecalculate(userId, gender, age, weight, height, goal, activityLevel)
     }
 }

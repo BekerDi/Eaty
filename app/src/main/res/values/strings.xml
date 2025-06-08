@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MyEaty</string>
+
+    <!-- Уровни активности -->
+    <string-array name="activity_levels_array">
+        <item>Низкий</item>
+        <item>Умеренный</item>
+        <item>Средний</item>
+        <item>Высокий</item>
+    </string-array>
+
+    <!-- Цели -->
+    <string-array name="goals_array">
+        <item>Похудение</item>
+        <item>Поддержание</item>
+        <item>Набор веса</item>
+    </string-array>
 </resources>

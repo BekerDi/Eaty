@@ -3,7 +3,7 @@ package com.example.myeaty
 import androidx.annotation.Keep
 
 @Keep
-data class Product(
+data class Products(
     val id: Int,
     val name: String,
     val caloriesPer100g: Float,

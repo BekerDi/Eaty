@@ -395,7 +395,7 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
             return nullptr;
         }
 
-        jclass productClass = env->FindClass("com/example/myeaty/Product");
+        jclass productClass = env->FindClass("com/example/myeaty/Products");
         if (!productClass) {
             LOGI("Can't find Product class.");
             return nullptr;
@@ -433,3 +433,90 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
         return array;
     }
 
+//Извлекаем данные для странички где юзер будет их редактировать
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_com_example_myeaty_SQLBridge_nativeGetUserProfile(JNIEnv* env, jobject, jint userId) {
+    if (!db) return nullptr;
+
+    const char* sql = "SELECT name, gender, age, weight, height, goal, activity_level FROM Users WHERE id = ?;";
+    sqlite3_stmt* stmt;
+    jobject result = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, userId);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char* nameC = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            jstring name = env->NewStringUTF(nameC ? nameC : "");
+
+            int gender = sqlite3_column_int(stmt, 1);
+            int age = sqlite3_column_int(stmt, 2);
+            int weight = sqlite3_column_int(stmt, 3);
+            int height = sqlite3_column_int(stmt, 4);
+            int goal = sqlite3_column_int(stmt, 5);
+            int activityLevel = sqlite3_column_int(stmt, 6);
+
+            jclass userProfileClass = env->FindClass("com/example/myeaty/UserProfile");
+            jmethodID ctor = env->GetMethodID(userProfileClass, "<init>", "(Ljava/lang/String;IIIIII)V");
+
+            result = env->NewObject(userProfileClass, ctor, name, gender, age, weight, height, goal, activityLevel);
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    return result;
+}
+
+
+//Обновляем данные юзера
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myeaty_SQLBridge_nativeUpdateUserProfile(JNIEnv* env, jobject,
+                                                          jint userId,
+                                                          jint age, jint weight,
+                                                          jint height, jint goal,
+                                                          jint activityLevel) {
+    if (!db) return;
+
+    // Обновляем таблицу Users
+    const char* updateSQL = "UPDATE Users SET age = ?, weight = ?, height = ?, goal = ?, activity_level = ? WHERE id = ?;";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(db, updateSQL, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, age);
+        sqlite3_bind_int(stmt, 2, weight);
+        sqlite3_bind_int(stmt, 3, height);
+        sqlite3_bind_int(stmt, 4, goal);
+        sqlite3_bind_int(stmt, 5, activityLevel);
+        sqlite3_bind_int(stmt, 6, userId);
+
+        if (sqlite3_step(stmt) == SQLITE_DONE) {
+            LOGI("User data updated.");
+        } else {
+            LOGI("Error updating user.");
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    // Получаем пол пользователя
+    const char* genderSQL = "SELECT gender FROM Users WHERE id = ?;";
+    sqlite3_stmt* genderStmt;
+    int gender = 0;
+
+    if (sqlite3_prepare_v2(db, genderSQL, -1, &genderStmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(genderStmt, 1, userId);
+
+        if (sqlite3_step(genderStmt) == SQLITE_ROW) {
+            gender = sqlite3_column_int(genderStmt, 0);
+        }
+
+        sqlite3_finalize(genderStmt);
+    }
+
+    // Пересчитываем КБЖУ
+    Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(env, nullptr,
+                                                               userId, gender, age, weight, height, goal, activityLevel);
+}

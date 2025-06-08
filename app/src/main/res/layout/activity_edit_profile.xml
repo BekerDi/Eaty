@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d9d7c2"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Имя пользователя -->
+        <TextView
+            android:id="@+id/txt_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Имя: Иван"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:background="#eaeaea"
+            android:layout_marginBottom="16dp"
+            android:enabled="false" />
+
+        <!-- Возраст -->
+        <EditText
+            android:id="@+id/edit_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Возраст"
+            android:inputType="number"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Вес -->
+        <EditText
+            android:id="@+id/edit_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Вес"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Рост -->
+        <EditText
+            android:id="@+id/edit_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Рост"
+            android:inputType="number"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Цель -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Цель"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp" />
+
+        <RadioGroup
+            android:id="@+id/radio_goal_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="12dp">
+
+            <RadioButton
+                android:id="@+id/radio_lose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Похудение" />
+
+            <RadioButton
+                android:id="@+id/radio_keep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Поддержание" />
+
+            <RadioButton
+                android:id="@+id/radio_gain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Набор веса" />
+        </RadioGroup>
+
+        <!-- Уровень активности -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Уровень активности"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spinner_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Кнопки -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Сохранить"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Отмена" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

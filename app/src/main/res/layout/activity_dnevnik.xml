@@ -227,6 +227,14 @@ android:background="#A8B3A5">
                 android:scaleType="centerInside"
                 android:src="@drawable/iconplus"
                 android:contentDescription="Добавить ужин" />
+            <Button
+                android:id="@+id/btn_edit_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Профиль"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#434031"
+                android:textColor="#FFFFFF" />
         </RelativeLayout>
 
         <LinearLayout
@@ -237,4 +245,6 @@ android:background="#A8B3A5">
             android:layout_marginBottom="32dp" />
 
     </LinearLayout>
+
+
 </ScrollView>
