@@ -55,6 +55,9 @@ object SQLBridge {
         openDatabaseOnce(path)
     }
 
+    external fun nativeCheckUserExists(name: String): Boolean
+
+
     fun openDatabaseOnce(path: String) {
         if (!isDbOpen) {
             isDbOpen = nativeOpenDatabase(path)

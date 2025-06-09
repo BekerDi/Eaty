@@ -104,6 +104,31 @@ Java_com_example_myeaty_SQLBridge_nativeCloseDatabase(JNIEnv*, jobject) {
         LOGI("Database closed.");
     }
 }
+//Проверяем нет ли такого юзера
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_myeaty_SQLBridge_nativeCheckUserExists(JNIEnv* env, jobject, jstring jName) {
+    if (!db) return JNI_FALSE;
+
+    const char* name = env->GetStringUTFChars(jName, nullptr);
+    const char* sql = "SELECT 1 FROM Users WHERE name = ? LIMIT 1;";
+    sqlite3_stmt* stmt;
+    bool exists = false;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            exists = true;
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    env->ReleaseStringUTFChars(jName, name);
+    return exists ? JNI_TRUE : JNI_FALSE;
+}
+
 //Считаем калории!!!! и БЖУ
 extern "C"
 JNIEXPORT jfloatArray JNICALL

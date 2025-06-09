@@ -18,22 +18,27 @@ class LoginActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            view.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
             insets
         }
 
-        val loginEditText = findViewById<EditText>(R.id.edt_login)
+        val loginEditText    = findViewById<EditText>(R.id.edt_login)
         val passwordEditText = findViewById<EditText>(R.id.edt_password)
-        val entrButton = findViewById<Button>(R.id.btn_enter)
+        val enterButton      = findViewById<Button>(R.id.btn_enter)
 
         // Подключаем базу данных
         val dbPath = getDatabasePath("MyEaty.db").absolutePath
         SQLBridge.openDatabaseWithLog(dbPath)
 
-        entrButton.setOnClickListener {
-            val name = loginEditText.text.toString().trim()
+        enterButton.setOnClickListener {
+            val name     = loginEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
             if (name.isEmpty() || password.isEmpty()) {
@@ -47,16 +52,14 @@ class LoginActivity : AppCompatActivity() {
             if (userId > 0) {
                 Toast.makeText(this, "Вход успешен. ID: $userId", Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(this, DnevnikActivity::class.java)
-                intent.putExtra("userId", userId)
-
-                // 👇 ВАЖНО: добавляем флаги, чтобы предотвратить возврат к Login/MainActivity
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                val intent = Intent(this, DnevnikActivity::class.java).apply {
+                    putExtra("userId", userId)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
 
                 Log.d("LoginDebug", "Запускаем DnevnikActivity")
                 startActivity(intent)
-
-                finish() // Закрываем LoginActivity
+                finish()
             } else {
                 Toast.makeText(this, "Неверное имя или пароль", Toast.LENGTH_SHORT).show()
             }
