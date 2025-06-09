@@ -53,9 +53,9 @@ class DateActivity : AppCompatActivity() {
             }
 
             val goal = when {
-                radioSkinny.isChecked -> 1
-                radioNorm.isChecked -> 2
-                radioFat.isChecked -> 3
+                radioSkinny.isChecked -> 0
+                radioNorm.isChecked -> 1
+                radioFat.isChecked -> 2
                 else -> null
             }
 

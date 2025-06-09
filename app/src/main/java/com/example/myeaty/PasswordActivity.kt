@@ -1,5 +1,6 @@
 package com.example.myeaty
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -24,20 +25,15 @@ class PasswordActivity : AppCompatActivity() {
         val passwordInput = findViewById<EditText>(R.id.edtTxt_Password)
         val buttonSave = findViewById<Button>(R.id.btn_count)
 
-        // Открытие базы данных
         val dbPath = getDatabasePath("MyEaty.db").absolutePath
         SQLBridge.nativeOpenDatabase(dbPath)
 
-
-
-        // Очистка подсказки при фокусе
         passwordInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && passwordInput.text.toString() == "...") {
                 passwordInput.setText("")
             }
         }
 
-        // Сохранение данных пользователя
         buttonSave.setOnClickListener {
             val password = passwordInput.text.toString()
 
@@ -55,7 +51,7 @@ class PasswordActivity : AppCompatActivity() {
 
             UserData.password = password
 
-            // Сохраняем в базу и рассчитываем КБЖУ
+            // Сохраняем пользователя и рассчитываем КБЖУ
             val result = SQLBridge.saveUserAndCalculateKBJU(
                 UserData.name ?: "",
                 UserData.gender!!,
@@ -67,30 +63,33 @@ class PasswordActivity : AppCompatActivity() {
                 password
             )
 
-            val calories = result[0]
-            val protein = result[1]
-            val fat = result[2]
-            val carbs = result[3]
+            val userId = SQLBridge.nativeLoginUser(UserData.name ?: "", password)
 
-            val message = "КБЖУ рассчитаны:\nКкал: $calories\nБелки: $protein г\nЖиры: $fat г\nУглеводы: $carbs г"
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            if (userId > 0) {
+                val calories = result[0]
+                val protein = result[1]
+                val fat = result[2]
+                val carbs = result[3]
 
+                val message = "КБЖУ рассчитаны:\nКкал: $calories\nБелки: $protein г\nЖиры: $fat г\nУглеводы: $carbs г"
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
+                Toast.makeText(this, "Регистрация успешна! Входим в дневник...", Toast.LENGTH_SHORT).show()
 
-            Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show()
-
-
-
-
+                val intent = Intent(this, DnevnikActivity::class.java).apply {
+                    putExtra("userId", userId)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this, "Ошибка: не удалось войти после регистрации", Toast.LENGTH_SHORT).show()
+            }
         }
-
     }
+
     override fun onDestroy() {
         super.onDestroy()
         SQLBridge.nativeCloseDatabase()
     }
-
-
 }
-
-

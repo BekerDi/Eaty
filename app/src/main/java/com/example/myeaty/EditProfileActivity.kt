@@ -38,14 +38,22 @@ class EditProfileActivity : AppCompatActivity() {
             spinnerActivity.adapter = adapter
         }
 
+        // Получаем профиль
         val profile = SQLBridge.getUserProfile(userId)
+
+        if (profile == null) {
+            Toast.makeText(this, "Ошибка: профиль не найден", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Заполняем поля профиля
         txtUserName.text = "Имя: ${profile.name}"
         inputAge.setText(profile.age.toString())
         inputWeight.setText(profile.weight.toString())
         inputHeight.setText(profile.height.toString())
         spinnerActivity.setSelection(profile.activityLevel - 1)
 
-        // Цель
         when (profile.goal) {
             0 -> radioGroup.check(R.id.radio_lose)
             1 -> radioGroup.check(R.id.radio_keep)
@@ -69,15 +77,15 @@ class EditProfileActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            SQLBridge.updateUserProfileAndRecalculate(
+            SQLBridge.updateUserProfileWithFetchAndRecalculate(
                 userId,
-                profile.gender,
                 age,
                 weight,
                 height,
                 goal,
                 activity
             )
+
 
             Toast.makeText(this, "Профиль обновлён", Toast.LENGTH_SHORT).show()
             finish()

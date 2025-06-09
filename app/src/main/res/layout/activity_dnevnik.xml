@@ -211,33 +211,42 @@ android:background="#A8B3A5">
             android:textStyle="bold"
             android:layout_marginBottom="4dp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="4dp"
-            android:paddingEnd="8dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp"
+        android:paddingEnd="8dp">
 
-            <ImageButton
-                android:id="@+id/btn_add_dinner"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/iconplus"
-                android:contentDescription="Добавить ужин" />
-            <Button
-                android:id="@+id/btn_edit_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Профиль"
-                android:layout_marginBottom="12dp"
-                android:backgroundTint="#434031"
-                android:textColor="#FFFFFF" />
-        </RelativeLayout>
+        <ImageButton
+            android:id="@+id/btn_add_dinner"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/iconplus"
+            android:contentDescription="Добавить ужин" />
+    </RelativeLayout>
 
-        <LinearLayout
+    <!-- 👇 Эти две кнопки — ниже, вне RelativeLayout -->
+    <Button
+        android:id="@+id/btn_edit_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Профиль"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#434031"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/btn_add_custom_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Добавить продукт вручную" />
+
+
+    <LinearLayout
             android:id="@+id/dinner_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

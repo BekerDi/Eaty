@@ -1,6 +1,8 @@
 package com.example.myeaty
 
 import android.util.Log
+import com.example.myeaty.Product
+
 
 object SQLBridge {
 
@@ -8,7 +10,7 @@ object SQLBridge {
         System.loadLibrary("native-lib")
     }
 
-    // 🔧 Нативные методы
+    // 🧩 Нативные методы
     external fun nativeOpenDatabase(path: String): Boolean
     external fun nativeCloseDatabase()
     external fun nativeSaveUserFullData(
@@ -30,13 +32,11 @@ object SQLBridge {
         goal: Int,
         activityLevel: Int
     ): FloatArray
-
     external fun nativeGetLastUserId(): Int
     external fun nativeLoginUser(name: String, password: String): Int
     external fun nativeGetKBJUForUser(userId: Int): FloatArray
     external fun nativeInitProductDatabase()
-    external fun nativeGetAllProducts(): Array<Products>
-
+    external fun nativeGetAllProducts(): Array<Product>
     external fun nativeGetUserProfile(userId: Int): UserProfile
     external fun nativeUpdateUserProfile(
         userId: Int,
@@ -46,17 +46,15 @@ object SQLBridge {
         goal: Int,
         activityLevel: Int
     )
+    external fun nativeCheckUserExists(name: String): Boolean
 
-    // 🔧 Состояние базы
+    // 📦 Состояние базы
     private var isDbOpen = false
 
     fun openDatabaseWithLog(path: String) {
-        Log.i("MyEatyDebug", "DB Path: $path")
+        Log.i("MyEatyDebug", "Открытие базы: $path")
         openDatabaseOnce(path)
     }
-
-    external fun nativeCheckUserExists(name: String): Boolean
-
 
     fun openDatabaseOnce(path: String) {
         if (!isDbOpen) {
@@ -71,7 +69,7 @@ object SQLBridge {
         }
     }
 
-    // 🔧 Сохранение + пересчёт КБЖУ
+    // 👤 Регистрация пользователя + расчёт КБЖУ
     fun saveUserAndCalculateKBJU(
         name: String,
         gender: Int,
@@ -89,21 +87,21 @@ object SQLBridge {
 
     private fun getLastInsertedUserId(): Int {
         val userId = nativeGetLastUserId()
-        Log.i("MyEatyDebug", "Получен ID последнего пользователя: $userId")
+        Log.i("MyEatyDebug", "Последний ID пользователя: $userId")
         return userId
     }
 
-    // 🔧 Работа с продуктами
-    fun getAllProducts(): List<Products> {
+    // 📚 Работа с продуктами
+    fun getAllProducts(): List<Product> {
         return nativeGetAllProducts().toList()
     }
 
-    // 🔧 Получение профиля
+    // 📋 Получение профиля
     fun getUserProfile(userId: Int): UserProfile {
         return nativeGetUserProfile(userId)
     }
 
-    // 🔧 Обновление профиля без пересчёта (оставляем для совместимости)
+    // 🛠 Обновление профиля (без пересчёта)
     fun updateUserProfile(
         userId: Int,
         age: Int,
@@ -115,7 +113,7 @@ object SQLBridge {
         nativeUpdateUserProfile(userId, age, weight, height, goal, activityLevel)
     }
 
-    // 🔁 Обновление и пересчёт (если есть gender)
+    // 🔁 Обновление и пересчёт КБЖУ (c явным gender)
     fun updateUserProfileAndRecalculate(
         userId: Int,
         gender: Int,
@@ -126,10 +124,12 @@ object SQLBridge {
         activityLevel: Int
     ): FloatArray {
         nativeUpdateUserProfile(userId, age, weight, height, goal, activityLevel)
-        return nativeCalculateNutrition(userId, gender, age, weight, height, goal, activityLevel)
+        val result = nativeCalculateNutrition(userId, gender, age, weight, height, goal, activityLevel)
+        Log.i("MyEatyDebug", "Пересчитаны КБЖУ: К=${result[0]}, Б=${result[1]}, Ж=${result[2]}, У=${result[3]}")
+        return result
     }
 
-    // 🔁 Обновление и пересчёт (автоопределение gender)
+    // Обновление с автоопределением gender из базы
     fun updateUserProfileWithFetchAndRecalculate(
         userId: Int,
         age: Int,
@@ -141,4 +141,10 @@ object SQLBridge {
         val gender = getUserProfile(userId).gender
         return updateUserProfileAndRecalculate(userId, gender, age, weight, height, goal, activityLevel)
     }
+    external fun nativeInsertProduct(name: String, calories: Float, protein: Float, fat: Float, carbs: Float)
+
+    fun insertCustomProduct(name: String, calories: Float, protein: Float, fat: Float, carbs: Float) {
+        nativeInsertProduct(name, calories, protein, fat, carbs)
+    }
+
 }

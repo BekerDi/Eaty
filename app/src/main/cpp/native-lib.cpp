@@ -420,7 +420,7 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
             return nullptr;
         }
 
-        jclass productClass = env->FindClass("com/example/myeaty/Products");
+        jclass productClass = env->FindClass("com/example/myeaty/Product");
         if (!productClass) {
             LOGI("Can't find Product class.");
             return nullptr;
@@ -435,7 +435,7 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
         std::vector<jobject> products;
 
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            jint id = sqlite3_column_int(stmt, 0);
+            int id = sqlite3_column_int(stmt, 0);
             const char* nameC = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
             jstring name = env->NewStringUTF(nameC);
 
@@ -456,7 +456,8 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
         }
 
         return array;
-    }
+        }
+
 
 //Извлекаем данные для странички где юзер будет их редактировать
 extern "C"
@@ -544,4 +545,29 @@ Java_com_example_myeaty_SQLBridge_nativeUpdateUserProfile(JNIEnv* env, jobject,
     // Пересчитываем КБЖУ
     Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(env, nullptr,
                                                                userId, gender, age, weight, height, goal, activityLevel);
+}
+//Пользователь сам добавляет продукт
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myeaty_SQLBridge_nativeInsertProduct(JNIEnv* env, jobject,
+                                                      jstring name_, jfloat cal,
+                                                      jfloat prot, jfloat fat, jfloat carb) {
+    if (!db) return;
+
+    const char* name = env->GetStringUTFChars(name_, nullptr);
+    const char* sql = "INSERT OR IGNORE INTO Products (name, calories_per_100g, protein_per_100g, fat_per_100g, carb_per_100g) VALUES (?, ?, ?, ?, ?);";
+
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, name, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_double(stmt, 2, cal);
+        sqlite3_bind_double(stmt, 3, prot);
+        sqlite3_bind_double(stmt, 4, fat);
+        sqlite3_bind_double(stmt, 5, carb);
+
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    }
+
+    env->ReleaseStringUTFChars(name_, name);
 }
