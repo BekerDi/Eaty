@@ -492,7 +492,6 @@ Java_com_example_myeaty_SQLBridge_nativeInsertProduct(JNIEnv* env, jobject,
 
     env->ReleaseStringUTFChars(name_, name);
 }
-// ---- NativeLib (рецепты через RecipeManager) ----
 
 #undef LOG_TAG
 #define LOG_TAG "NativeLib"
@@ -513,7 +512,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRecipeTitle(
         JNIEnv* env,
-        jobject /* this */,
+        jobject ,
         jstring jRecipeId) {
     std::string recipeId = jstringToStdString(env, jRecipeId);
     std::string title = RecipeManager::getRecipeTitle(recipeId);
@@ -524,7 +523,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRecipeShortDescription(
         JNIEnv* env,
-        jobject /* this */,
+        jobject ,
         jstring jRecipeId) {
     std::string recipeId = jstringToStdString(env, jRecipeId);
     std::string shortDesc = RecipeManager::getRecipeShortDescription(recipeId);
@@ -535,7 +534,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRecipeFullText(
         JNIEnv* env,
-        jobject /* this */,
+        jobject ,
         jstring jRecipeId) {
     std::string recipeId = jstringToStdString(env, jRecipeId);
     std::string fullText = RecipeManager::getRecipeFullText(recipeId);
@@ -546,7 +545,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRecipeImageName(
         JNIEnv* env,
-        jobject /* this */,
+        jobject,
         jstring jRecipeId) {
     std::string recipeId = jstringToStdString(env, jRecipeId);
     std::string imageName = RecipeManager::getRecipeImageName(recipeId);
@@ -556,7 +555,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRationTitle(
         JNIEnv* env,
-        jobject /* this */,
+        jobject,
         jstring jRationId) {
     std::string rationId = jstringToStdString(env, jRationId);
     std::string title = RationManager::getRationTitle(rationId);
@@ -567,7 +566,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRationShortDescription(
         JNIEnv* env,
-        jobject /* this */,
+        jobject,
         jstring jRationId) {
     std::string rationId = jstringToStdString(env, jRationId);
     std::string shortDesc = RationManager::getRationShortDescription(rationId);
@@ -578,18 +577,10 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_myeaty_NativeLib_getRationFullPlan(
         JNIEnv* env,
-        jobject /* this */,
+        jobject,
         jstring jRationId) {
     std::string rationId = jstringToStdString(env, jRationId);
     std::string fullPlan = RationManager::getRationFullPlan(rationId);
     return env->NewStringUTF(fullPlan.c_str());
-}
 
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_example_myeaty_NativeLib_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
 }
