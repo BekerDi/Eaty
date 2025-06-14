@@ -4,11 +4,32 @@
 #include <android/log.h>
 #include <vector>
 
-
 #define LOG_TAG "MyEatyDebug"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
 sqlite3* db = nullptr;
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_myeaty_SQLBridge_nativeClearTables(JNIEnv*, jobject) {
+
+    const char* tables[] = { "Users", "KBJU", "Products" };
+
+    for (const char* table : tables) {
+        std::string sql = "DELETE FROM ";
+        sql += table;
+        sql += ";";
+
+        char* errMsg = nullptr;
+        if (sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg) != SQLITE_OK) {
+            LOGI("Failed to clear table %s: %s", table, errMsg);
+            sqlite3_free(errMsg);
+        } else {
+            LOGI("Cleared table %s", table);
+        }
+    }
+}
 
 extern "C"
 JNIEXPORT jboolean JNICALL
@@ -49,7 +70,6 @@ Java_com_example_myeaty_SQLBridge_nativeOpenDatabase(JNIEnv* env, jobject, jstri
     return success ? JNI_TRUE : JNI_FALSE;
 }
 
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_myeaty_SQLBridge_nativeSaveUserFullData(JNIEnv* env, jobject,
@@ -65,7 +85,6 @@ Java_com_example_myeaty_SQLBridge_nativeSaveUserFullData(JNIEnv* env, jobject,
     const char* name = env->GetStringUTFChars(name_, nullptr);
     const char* password = env->GetStringUTFChars(password_, nullptr);
 
-    // Используем подготовленные выражения (лучше и безопаснее)
     const char* sql = "INSERT INTO Users (name, gender, age, weight, height, goal, activity_level, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
     sqlite3_stmt* stmt;
 
@@ -94,7 +113,6 @@ Java_com_example_myeaty_SQLBridge_nativeSaveUserFullData(JNIEnv* env, jobject,
     env->ReleaseStringUTFChars(password_, password);
 }
 
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_myeaty_SQLBridge_nativeCloseDatabase(JNIEnv*, jobject) {
@@ -104,7 +122,7 @@ Java_com_example_myeaty_SQLBridge_nativeCloseDatabase(JNIEnv*, jobject) {
         LOGI("Database closed.");
     }
 }
-//Проверяем нет ли такого юзера
+
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_example_myeaty_SQLBridge_nativeCheckUserExists(JNIEnv* env, jobject, jstring jName) {
@@ -128,8 +146,34 @@ Java_com_example_myeaty_SQLBridge_nativeCheckUserExists(JNIEnv* env, jobject, js
     env->ReleaseStringUTFChars(jName, name);
     return exists ? JNI_TRUE : JNI_FALSE;
 }
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_example_myeaty_SQLBridge_nativeLoginUser(JNIEnv* env, jobject,
+                                                  jstring jName, jstring jPassword) {
+    const char* name = env->GetStringUTFChars(jName, nullptr);
+    const char* password = env->GetStringUTFChars(jPassword, nullptr);
 
-//Считаем калории!!!! и БЖУ
+    const char* sql = "SELECT id FROM Users WHERE name = ? AND password = ?;";
+    sqlite3_stmt* stmt;
+    int userId = -1;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, password, -1, SQLITE_STATIC);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            userId = sqlite3_column_int(stmt, 0);
+        }
+
+        sqlite3_finalize(stmt);
+    }
+
+    env->ReleaseStringUTFChars(jName, name);
+    env->ReleaseStringUTFChars(jPassword, password);
+
+    return userId;
+}
+
 extern "C"
 JNIEXPORT jfloatArray JNICALL
 Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
@@ -165,7 +209,6 @@ Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
     float remainingCalories = maintenanceCalories - (proteinCalories + fatCalories);
     float carbs = remainingCalories / 4;
 
-    // 🔧 Создаем таблицу KBJU
     const char* createKBJUTable = "CREATE TABLE IF NOT EXISTS KBJU ("
                                   "user_id INTEGER PRIMARY KEY, "
                                   "calories INTEGER, "
@@ -182,7 +225,6 @@ Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
         LOGI("KBJU table is ready.");
     }
 
-    // 🔧 Вставляем данные в таблицу KBJU
     const char* insertSQL = "INSERT OR REPLACE INTO KBJU (user_id, calories, proteins, fats, carbs) VALUES (?, ?, ?, ?, ?);";
     sqlite3_stmt* stmt;
 
@@ -204,7 +246,6 @@ Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(JNIEnv* env, jobject,
         LOGI("Failed to prepare KBJU insert.");
     }
 
-    // 🔁 Возвращаем результат
     jfloatArray result = env->NewFloatArray(4);
     float values[4] = { maintenanceCalories, protein, fat, carbs };
     env->SetFloatArrayRegion(result, 0, 4, values);
@@ -229,35 +270,7 @@ Java_com_example_myeaty_SQLBridge_nativeGetLastUserId(JNIEnv*, jobject) {
 
     return lastId;
 }
-extern "C"
-//Делаем запрос на имя и пароль, чтобы пользователь мог соврешить вход
-JNIEXPORT jint JNICALL
-Java_com_example_myeaty_SQLBridge_nativeLoginUser(JNIEnv* env, jobject,
-                                                  jstring jName, jstring jPassword) {
-    const char* name = env->GetStringUTFChars(jName, nullptr);
-    const char* password = env->GetStringUTFChars(jPassword, nullptr);
 
-    const char* sql = "SELECT id FROM Users WHERE name = ? AND password = ?;";
-    sqlite3_stmt* stmt;
-    int userId = -1;
-
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
-        sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, password, -1, SQLITE_STATIC);
-
-        if (sqlite3_step(stmt) == SQLITE_ROW) {
-            userId = sqlite3_column_int(stmt, 0);
-        }
-
-        sqlite3_finalize(stmt);
-    }
-
-    env->ReleaseStringUTFChars(jName, name);
-    env->ReleaseStringUTFChars(jPassword, password);
-
-    return userId;
-}
-//Возвращаем КБЖУ авторизованного пользователя
 extern "C"
 JNIEXPORT jfloatArray JNICALL
 Java_com_example_myeaty_SQLBridge_nativeGetKBJUForUser(JNIEnv* env, jobject, jint userId) {
@@ -267,7 +280,7 @@ Java_com_example_myeaty_SQLBridge_nativeGetKBJUForUser(JNIEnv* env, jobject, jin
     sqlite3_stmt* stmt;
 
     jfloatArray result = env->NewFloatArray(4);
-    float values[4] = {0, 0, 0, 0}; // default
+    float values[4] = {0, 0, 0, 0};
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, userId);
@@ -285,11 +298,12 @@ Java_com_example_myeaty_SQLBridge_nativeGetKBJUForUser(JNIEnv* env, jobject, jin
     env->SetFloatArrayRegion(result, 0, 4, values);
     return result;
 }
-//Создаем таблицу с продуктами
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject) {
     if (!db) return;
+
     const char *createProductsTableSQL = "CREATE TABLE IF NOT EXISTS Products ("
                                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                          "name TEXT UNIQUE, "
@@ -305,93 +319,7 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
         LOGI("Products table created successfully.");
     }
 
-    const char *insertProductSQL = "INSERT OR IGNORE INTO Products "
-                                   "(name, calories_per_100g, protein_per_100g, fat_per_100g, carb_per_100g) "
-                                   "VALUES (?, ?, ?, ?, ?);";
-    sqlite3_stmt *stmt;
-
-    if (sqlite3_prepare_v2(db, insertProductSQL, -1, &stmt, nullptr) == SQLITE_OK) {
-
-        struct Product {
-            const char *name;
-            float cal, prot, fat, carb;
-        };
-
-        Product products[] = {
-                {"Гречка",      310, 12,   2,    61},
-                {"Рис",         323, 7,    0,    73},
-                {"Пшено",       334, 12,   2,    69},
-                {"Чечевица",    310, 24,   1,    53},
-                {"Геркулес",    355, 13,   6,    66},
-                {"Кукурузная ", 325, 8.0,  1.0,  75.0},
-                {"Макароны ",   335, 10.0, 1.0,  69.0},
-                {"Булгур",      342, 12.0, 1.0,  58.0},
-                {"Кабачок",     24,  0.6,  0.6,  4.6},
-                {"Картофель",   80,  2.0,  0.4,  18.0},
-                {"Огурец",      15,  0.8,  0.1,  2.8},
-                {"Пастернак",   47,  1.4,  0.5,  9.2},
-                {"Помидоры",    20,  0.6,  0.2,  4.2},
-                {"Тыква",       22,  1.0,  0.1,  4.4},
-                {"Банан",       89,  2.0,  0.0,  22.0},
-                {"Яблоко",      47,  0.0,  0.0,  10.0},
-                {"Груша",       42,  0.0,  0.0,  11.0},
-                {"Авокадо ",    200, 2.0,  20.0, 7.0},
-                {"Яйцо",        157, 12.7, 11.5, 0.7},
-                {"Молоко 2,5%", 53,  2.8,  2.5,  4.6},
-                {"Молоко 3,2%", 58,  2.8,  3.2,  4.6},
-                {"Кефир 1%",    37,  2.8,  1.0,  4.0},
-                {"Кефир 2,5%",  51,  3.0,  2.5,  4.0},
-                {"Кефир 3,2%",  58,  3.2,  3.2,  4.1},
-                {"Творог 0,5%", 71,  16.0, 0.5,  1.0},
-                {"Творог 5%",   121, 17.2, 5.0,  1.8},
-                {"Творог 9%",   159, 16.7, 9.0,  2.0},
-                {"Курица",      110, 23.0, 1.2,  0.0},
-                {"Индейка",     84,  19.2, 0.7,  0.0},
-                {"Баранина",    209, 15.6, 16.3, 0.0},
-                {"Говядина",    187, 18.9, 12.4, 0.0},
-                {"Свинина",     259, 16.0, 21.6, 0.0},
-                {"Конина",      187, 20.2, 7.0,  0.0},
-                {"Горбуша",     140, 20.0, 6.0,  0.0},
-                {"Семга",       225, 21.0, 15.0, 0.0},
-                {"Тунец",       108, 23.0, 1.0,  0.0},
-                {"Минтай",      81,  17.0, 0.8,  0.0}
-
-        };
-
-        for (auto &p: products) {
-            sqlite3_bind_text(stmt, 1, p.name, -1, SQLITE_STATIC);
-            sqlite3_bind_double(stmt, 2, p.cal);
-            sqlite3_bind_double(stmt, 3, p.prot);
-            sqlite3_bind_double(stmt, 4, p.fat);
-            sqlite3_bind_double(stmt, 5, p.carb);
-
-            if (sqlite3_step(stmt) != SQLITE_DONE) {
-                LOGI("Failed to insert product: %s", p.name);
-            }
-            sqlite3_reset(stmt);
-        }
-
-        sqlite3_finalize(stmt);
-        LOGI("Products inserted.");
-    } else {
-        LOGI("Failed to prepare product insert.");
-    }
-    // Создаем таблицу Meal
-    const char* createMealTableSQL = "CREATE TABLE IF NOT EXISTS Meal ("
-                                     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                     "user INTEGER, "
-                                     "date TEXT, "
-                                     "mealType TEXT, "
-                                     "FOREIGN KEY(user) REFERENCES Users(id));";
-
-    if (sqlite3_exec(db, createMealTableSQL, nullptr, nullptr, &errMsg) != SQLITE_OK) {
-        LOGI("Failed to create Meal table: %s", errMsg);
-        sqlite3_free(errMsg);
-    } else {
-        LOGI("Meal table created.");
-    }
-
-// Создаем таблицу FoodEntry
+    // Создаем таблицу FoodEntry
     const char* createFoodEntrySQL = "CREATE TABLE IF NOT EXISTS FoodEntry ("
                                      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                      "meal_id INTEGER, "
@@ -405,61 +333,59 @@ Java_com_example_myeaty_SQLBridge_nativeInitProductDatabase(JNIEnv* env, jobject
         sqlite3_free(errMsg);
     } else {
         LOGI("FoodEntry table created.");
-    }}
-//обращаемся чтобы извлекать пролдукты
-    extern "C"
-    JNIEXPORT jobjectArray JNICALL
-    Java_com_example_myeaty_SQLBridge_nativeGetAllProducts(JNIEnv* env, jobject) {
-        if (!db) return nullptr;
+    }
+}
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_com_example_myeaty_SQLBridge_nativeGetAllProducts(JNIEnv* env, jobject) {
+    if (!db) return nullptr;
 
-        const char* sql = "SELECT id, name, calories_per_100g, protein_per_100g, fat_per_100g, carb_per_100g FROM Products;";
-        sqlite3_stmt* stmt;
+    const char* sql = "SELECT id, name, calories_per_100g, protein_per_100g, fat_per_100g, carb_per_100g FROM Products;";
+    sqlite3_stmt* stmt;
 
-        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-            LOGI("Failed to prepare SELECT from Products.");
-            return nullptr;
-        }
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        LOGI("Failed to prepare SELECT from Products.");
+        return nullptr;
+    }
 
-        jclass productClass = env->FindClass("com/example/myeaty/Product");
-        if (!productClass) {
-            LOGI("Can't find Product class.");
-            return nullptr;
-        }
+    jclass productClass = env->FindClass("com/example/myeaty/Product");
+    if (!productClass) {
+        LOGI("Can't find Product class.");
+        return nullptr;
+    }
 
-        jmethodID ctor = env->GetMethodID(productClass, "<init>", "(ILjava/lang/String;FFFF)V");
-        if (!ctor) {
-            LOGI("Can't find Product constructor.");
-            return nullptr;
-        }
+    jmethodID ctor = env->GetMethodID(productClass, "<init>", "(ILjava/lang/String;FFFF)V");
+    if (!ctor) {
+        LOGI("Can't find Product constructor.");
+        return nullptr;
+    }
 
-        std::vector<jobject> products;
+    std::vector<jobject> products;
 
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            int id = sqlite3_column_int(stmt, 0);
-            const char* nameC = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-            jstring name = env->NewStringUTF(nameC);
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const char* nameC = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        jstring name = env->NewStringUTF(nameC ? nameC : "");
 
-            jfloat cal = sqlite3_column_double(stmt, 2);
-            jfloat prot = sqlite3_column_double(stmt, 3);
-            jfloat fat = sqlite3_column_double(stmt, 4);
-            jfloat carb = sqlite3_column_double(stmt, 5);
+        jfloat cal = sqlite3_column_double(stmt, 2);
+        jfloat prot = sqlite3_column_double(stmt, 3);
+        jfloat fat = sqlite3_column_double(stmt, 4);
+        jfloat carb = sqlite3_column_double(stmt, 5);
 
-            jobject product = env->NewObject(productClass, ctor, id, name, cal, prot, fat, carb);
-            products.push_back(product);
-        }
+        jobject product = env->NewObject(productClass, ctor, id, name, cal, prot, fat, carb);
+        products.push_back(product);
+    }
 
-        sqlite3_finalize(stmt);
+    sqlite3_finalize(stmt);
 
-        jobjectArray array = env->NewObjectArray(products.size(), productClass, nullptr);
-        for (size_t i = 0; i < products.size(); ++i) {
-            env->SetObjectArrayElement(array, i, products[i]);
-        }
+    jobjectArray array = env->NewObjectArray(products.size(), productClass, nullptr);
+    for (size_t i = 0; i < products.size(); ++i) {
+        env->SetObjectArrayElement(array, i, products[i]);
+    }
 
-        return array;
-        }
+    return array;
+}
 
-
-//Извлекаем данные для странички где юзер будет их редактировать
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_example_myeaty_SQLBridge_nativeGetUserProfile(JNIEnv* env, jobject, jint userId) {
@@ -495,8 +421,6 @@ Java_com_example_myeaty_SQLBridge_nativeGetUserProfile(JNIEnv* env, jobject, jin
     return result;
 }
 
-
-//Обновляем данные юзера
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_myeaty_SQLBridge_nativeUpdateUserProfile(JNIEnv* env, jobject,
@@ -506,7 +430,6 @@ Java_com_example_myeaty_SQLBridge_nativeUpdateUserProfile(JNIEnv* env, jobject,
                                                           jint activityLevel) {
     if (!db) return;
 
-    // Обновляем таблицу Users
     const char* updateSQL = "UPDATE Users SET age = ?, weight = ?, height = ?, goal = ?, activity_level = ? WHERE id = ?;";
     sqlite3_stmt* stmt;
 
@@ -527,7 +450,6 @@ Java_com_example_myeaty_SQLBridge_nativeUpdateUserProfile(JNIEnv* env, jobject,
         sqlite3_finalize(stmt);
     }
 
-    // Получаем пол пользователя
     const char* genderSQL = "SELECT gender FROM Users WHERE id = ?;";
     sqlite3_stmt* genderStmt;
     int gender = 0;
@@ -542,11 +464,10 @@ Java_com_example_myeaty_SQLBridge_nativeUpdateUserProfile(JNIEnv* env, jobject,
         sqlite3_finalize(genderStmt);
     }
 
-    // Пересчитываем КБЖУ
     Java_com_example_myeaty_SQLBridge_nativeCalculateNutrition(env, nullptr,
                                                                userId, gender, age, weight, height, goal, activityLevel);
 }
-//Пользователь сам добавляет продукт
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_myeaty_SQLBridge_nativeInsertProduct(JNIEnv* env, jobject,
@@ -570,4 +491,105 @@ Java_com_example_myeaty_SQLBridge_nativeInsertProduct(JNIEnv* env, jobject,
     }
 
     env->ReleaseStringUTFChars(name_, name);
+}
+// ---- NativeLib (рецепты через RecipeManager) ----
+
+#undef LOG_TAG
+#define LOG_TAG "NativeLib"
+
+#include "RecipeManager.h"
+#include "RationManager.h"
+
+static std::string jstringToStdString(JNIEnv* env, jstring jStr) {
+    if (!jStr) return "";
+
+    const char* chars = env->GetStringUTFChars(jStr, nullptr);
+    std::string s(chars);
+    env->ReleaseStringUTFChars(jStr, chars);
+    return s;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRecipeTitle(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRecipeId) {
+    std::string recipeId = jstringToStdString(env, jRecipeId);
+    std::string title = RecipeManager::getRecipeTitle(recipeId);
+    return env->NewStringUTF(title.c_str());
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRecipeShortDescription(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRecipeId) {
+    std::string recipeId = jstringToStdString(env, jRecipeId);
+    std::string shortDesc = RecipeManager::getRecipeShortDescription(recipeId);
+    return env->NewStringUTF(shortDesc.c_str());
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRecipeFullText(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRecipeId) {
+    std::string recipeId = jstringToStdString(env, jRecipeId);
+    std::string fullText = RecipeManager::getRecipeFullText(recipeId);
+    return env->NewStringUTF(fullText.c_str());
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRecipeImageName(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRecipeId) {
+    std::string recipeId = jstringToStdString(env, jRecipeId);
+    std::string imageName = RecipeManager::getRecipeImageName(recipeId);
+    return env->NewStringUTF(imageName.c_str());
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRationTitle(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRationId) {
+    std::string rationId = jstringToStdString(env, jRationId);
+    std::string title = RationManager::getRationTitle(rationId);
+    return env->NewStringUTF(title.c_str());
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRationShortDescription(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRationId) {
+    std::string rationId = jstringToStdString(env, jRationId);
+    std::string shortDesc = RationManager::getRationShortDescription(rationId);
+    return env->NewStringUTF(shortDesc.c_str());
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_getRationFullPlan(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring jRationId) {
+    std::string rationId = jstringToStdString(env, jRationId);
+    std::string fullPlan = RationManager::getRationFullPlan(rationId);
+    return env->NewStringUTF(fullPlan.c_str());
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_myeaty_NativeLib_stringFromJNI(
+        JNIEnv* env,
+        jobject /* this */) {
+    std::string hello = "Hello from C++";
+    return env->NewStringUTF(hello.c_str());
 }

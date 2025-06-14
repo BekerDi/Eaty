@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Рационы -->
+    <item
+        android:id="@+id/nav_rations"
+        android:icon="@drawable/ic_diet"
+        android:title="Рационы"
+        android:enabled="true"/>
+
+    <!-- Рецепты -->
+    <item
+        android:id="@+id/nav_recipes"
+        android:icon="@drawable/ic_recipes"
+        android:title="Рецепты"
+        android:enabled="true"/>
+
+    <!-- Дневник -->
+    <item
+        android:id="@+id/nav_diary"
+        android:icon="@drawable/ic_diary"
+        android:title="Дневник"
+        android:enabled="true"/>
+
+    <!-- Создать -->
+    <item
+        android:id="@+id/nav_create"
+        android:icon="@drawable/ic_create"
+        android:title="Создать"
+        android:enabled="true"/>
+
+    <!-- Профиль -->
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="Профиль"
+        android:enabled="true"/>
+</menu>

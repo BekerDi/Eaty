@@ -1,8 +1,10 @@
 package com.example.myeaty
 
-import android.os.Bundle
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.*
@@ -10,6 +12,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DnevnikActivity : AppCompatActivity() {
 
@@ -28,11 +33,10 @@ class DnevnikActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_dnevnik)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        val txtDate = findViewById<TextView>(R.id.txt_date)
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru", "RU"))
+        txtDate.text = dateFormat.format(currentDate)
 
         userId = intent.getIntExtra("userId", -1)
         if (userId == -1) {
@@ -41,39 +45,67 @@ class DnevnikActivity : AppCompatActivity() {
             return
         }
 
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.nav_diary
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_rations -> {
+                    startActivity(
+                        Intent(this, RationActivity::class.java)
+                            .putExtra("userId", userId)
+                    )
+                    true
+                }
+                R.id.nav_recipes -> {
+                    startActivity(
+                        Intent(this, RecipeActivity::class.java)
+                            .putExtra("userId", userId)
+                    )
+                    true
+                }
+                R.id.nav_diary -> {
+                    true
+                }
+                R.id.nav_create -> {
+                    showAddCustomProductDialog()
+                    true
+                }
+                R.id.nav_profile -> {
+                    startActivity(
+                        Intent(this, EditProfileActivity::class.java)
+                            .putExtra("userId", userId)
+                    )
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // подстраиваем отступы под системные бара
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            insets
+        }
+
         val kbjuArray = SQLBridge.nativeGetKBJUForUser(userId)
         val txtNorm = findViewById<TextView>(R.id.txt_kbju_total)
         txtNorm.text = "К: ${kbjuArray[0].toInt()}  Б: ${kbjuArray[1].toInt()}  Ж: ${kbjuArray[2].toInt()}  У: ${kbjuArray[3].toInt()}"
 
         txtEaten = findViewById(R.id.txt_kbju_eaten)
 
-        findViewById<Button>(R.id.btn_edit_profile).setOnClickListener {
-            val intent = Intent(this, EditProfileActivity::class.java)
-            intent.putExtra("userId", userId)
-            startActivity(intent)
-        }
-
-        findViewById<Button>(R.id.btn_add_custom_product).setOnClickListener {
-            showAddCustomProductDialog()
-        }
-
         products = loadProducts()
 
-        findViewById<ImageButton>(R.id.btn_add_breakfast).setOnClickListener {
-            showProductDialog("Завтрак", findViewById(R.id.breakfast_container))
-        }
-        findViewById<ImageButton>(R.id.btn_add_snack).setOnClickListener {
-            showProductDialog("Перекус", findViewById(R.id.snack_container))
-        }
-        findViewById<ImageButton>(R.id.btn_add_lunch).setOnClickListener {
-            showProductDialog("Обед", findViewById(R.id.lunch_container))
-        }
-        findViewById<ImageButton>(R.id.btn_add_afternoon).setOnClickListener {
-            showProductDialog("Полдник", findViewById(R.id.afternoon_container))
-        }
-        findViewById<ImageButton>(R.id.btn_add_dinner).setOnClickListener {
-            showProductDialog("Ужин", findViewById(R.id.dinner_container))
-        }
+        findViewById<ImageButton>(R.id.btn_add_breakfast)
+            .setOnClickListener { showProductDialog("Завтрак", findViewById(R.id.breakfast_container)) }
+        findViewById<ImageButton>(R.id.btn_add_snack)
+            .setOnClickListener { showProductDialog("Перекус", findViewById(R.id.snack_container)) }
+        findViewById<ImageButton>(R.id.btn_add_lunch)
+            .setOnClickListener { showProductDialog("Обед", findViewById(R.id.lunch_container)) }
+        findViewById<ImageButton>(R.id.btn_add_afternoon)
+            .setOnClickListener { showProductDialog("Полдник", findViewById(R.id.afternoon_container)) }
+        findViewById<ImageButton>(R.id.btn_add_dinner)
+            .setOnClickListener { showProductDialog("Ужин", findViewById(R.id.dinner_container)) }
     }
 
     private fun loadProducts(): List<Product> {
@@ -89,7 +121,8 @@ class DnevnikActivity : AppCompatActivity() {
     }
 
     private fun showAddCustomProductDialog() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_custom_product, null)
+        val dialogView =
+            LayoutInflater.from(this).inflate(R.layout.dialog_add_custom_product, null)
         val inputName = dialogView.findViewById<EditText>(R.id.input_custom_name)
         val inputCalories = dialogView.findViewById<EditText>(R.id.input_custom_calories)
         val inputProtein = dialogView.findViewById<EditText>(R.id.input_custom_protein)
@@ -110,7 +143,6 @@ class DnevnikActivity : AppCompatActivity() {
                     Toast.makeText(this, "Заполните все поля корректно", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
-
                 SQLBridge.insertCustomProduct(name, cal, prot, fat, carb)
                 products = loadProducts()
                 Toast.makeText(this, "Продукт добавлен", Toast.LENGTH_SHORT).show()
@@ -120,24 +152,30 @@ class DnevnikActivity : AppCompatActivity() {
     }
 
     private fun showProductDialog(mealType: String, container: LinearLayout) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_product, null)
-        val searchInput = dialogView.findViewById<AutoCompleteTextView>(R.id.input_product_search)
+        val dialogView =
+            LayoutInflater.from(this).inflate(R.layout.dialog_add_product, null)
+        val searchInput =
+            dialogView.findViewById<AutoCompleteTextView>(R.id.input_product_search)
         val inputWeight = dialogView.findViewById<EditText>(R.id.input_weight)
 
         val productNames = products.map { it.name }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, productNames)
+        val adapter =
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, productNames)
         searchInput.setAdapter(adapter)
 
-        searchInput.addTextChangedListener(object : android.text.TextWatcher {
-            override fun afterTextChanged(s: android.text.Editable?) {
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
                 val query = s.toString().lowercase()
-                val filteredNames = productNames.filter { it.lowercase().contains(query) }
+                val filtered = productNames.filter { it.lowercase().contains(query) }
                 searchInput.setAdapter(
-                    ArrayAdapter(this@DnevnikActivity, android.R.layout.simple_dropdown_item_1line, filteredNames)
+                    ArrayAdapter(
+                        this@DnevnikActivity,
+                        android.R.layout.simple_dropdown_item_1line,
+                        filtered
+                    )
                 )
                 searchInput.showDropDown()
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -146,9 +184,9 @@ class DnevnikActivity : AppCompatActivity() {
             .setTitle("Добавить продукт в \"$mealType\"")
             .setView(dialogView)
             .setPositiveButton("Добавить") { _, _ ->
-                val selectedName = searchInput.text.toString().trim()
+                val name = searchInput.text.toString().trim()
                 val weightText = inputWeight.text.toString()
-                val product = products.find { it.name.equals(selectedName, ignoreCase = true) }
+                val product = products.find { it.name.equals(name, true) }
 
                 if (product != null && weightText.isNotBlank()) {
                     val weight = weightText.toFloat()
@@ -162,25 +200,26 @@ class DnevnikActivity : AppCompatActivity() {
                     totalFat += fat
                     totalCarbs += carb
 
-                    txtEaten.text = "Съедено: К: ${totalCalories.toInt()} Б: ${totalProtein.toInt()} Ж: ${totalFat.toInt()} У: ${totalCarbs.toInt()}"
+                    txtEaten.text =
+                        "Съедено: К: ${totalCalories.toInt()} Б: ${totalProtein.toInt()} Ж: ${totalFat.toInt()} У: ${totalCarbs.toInt()}"
 
-                    val productBlock = RelativeLayout(this).apply {
+                    val block = RelativeLayout(this).apply {
                         setBackgroundResource(R.drawable.bg_meal_input)
-                        layoutParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        ).apply { setMargins(0, 8, 0, 8) }
+                        layoutParams =
+                            LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            ).apply { setMargins(0, 8, 0, 8) }
                         setPadding(24, 24, 24, 24)
                     }
-
-                    val productText = TextView(this).apply {
-                        text = "${product.name} - ${weight}г\nК: ${cal.toInt()} Б: ${prot.toInt()} Ж: ${fat.toInt()} У: ${carb.toInt()}"
+                    val tv = TextView(this).apply {
+                        text =
+                            "${product.name} - ${weight}г\nК: ${cal.toInt()} Б: ${prot.toInt()} Ж: ${fat.toInt()} У: ${carb.toInt()}"
                         textSize = 14f
                         setTextColor(resources.getColor(android.R.color.black))
                     }
-
-                    productBlock.addView(productText)
-                    container.addView(productBlock)
+                    block.addView(tv)
+                    container.addView(block)
                 } else {
                     Toast.makeText(this, "Выберите продукт и введите вес", Toast.LENGTH_SHORT).show()
                 }
@@ -193,6 +232,7 @@ class DnevnikActivity : AppCompatActivity() {
         super.onResume()
         val kbjuArray = SQLBridge.nativeGetKBJUForUser(userId)
         val txtNorm = findViewById<TextView>(R.id.txt_kbju_total)
-        txtNorm.text = "К: ${kbjuArray[0].toInt()}  Б: ${kbjuArray[1].toInt()}  Ж: ${kbjuArray[2].toInt()}  У: ${kbjuArray[3].toInt()}"
+        txtNorm.text =
+            "К: ${kbjuArray[0].toInt()}  Б: ${kbjuArray[1].toInt()}  Ж: ${kbjuArray[2].toInt()}  У: ${kbjuArray[3].toInt()}"
     }
 }

@@ -1,8 +1,10 @@
 package com.example.myeaty
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -86,7 +88,6 @@ class EditProfileActivity : AppCompatActivity() {
                 activity
             )
 
-
             Toast.makeText(this, "Профиль обновлён", Toast.LENGTH_SHORT).show()
             finish()
         }
@@ -94,5 +95,78 @@ class EditProfileActivity : AppCompatActivity() {
         btnCancel.setOnClickListener {
             finish()
         }
+
+        // === Добавляем обработку нижней панели навигации ===
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.nav_profile
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_rations -> {
+                    startActivity(
+                        Intent(this, RationActivity::class.java)
+                            .putExtra("userId", userId)
+                    )
+                    finish()
+                    true
+                }
+                R.id.nav_recipes -> {
+                    startActivity(
+                        Intent(this, RecipeActivity::class.java)
+                            .putExtra("userId", userId)
+                    )
+                    finish()
+                    true
+                }
+                R.id.nav_diary -> {
+                    startActivity(
+                        Intent(this, DnevnikActivity::class.java)
+                            .putExtra("userId", userId)
+                    )
+                    finish()
+                    true
+                }
+                R.id.nav_create -> {
+                    showAddCustomProductDialog()
+                    true
+                }
+
+                R.id.nav_profile -> {
+                    // остаемся на текущем экране
+                    true
+                }
+                else -> false
+            }
+        }
     }
+    private fun showAddCustomProductDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_custom_product, null)
+        val inputName = dialogView.findViewById<EditText>(R.id.input_custom_name)
+        val inputCalories = dialogView.findViewById<EditText>(R.id.input_custom_calories)
+        val inputProtein = dialogView.findViewById<EditText>(R.id.input_custom_protein)
+        val inputFat = dialogView.findViewById<EditText>(R.id.input_custom_fat)
+        val inputCarbs = dialogView.findViewById<EditText>(R.id.input_custom_carbs)
+
+        android.app.AlertDialog.Builder(this)
+            .setTitle("Добавить продукт")
+            .setView(dialogView)
+            .setPositiveButton("Сохранить") { _, _ ->
+                val name = inputName.text.toString()
+                val cal = inputCalories.text.toString().toFloatOrNull()
+                val prot = inputProtein.text.toString().toFloatOrNull()
+                val fat = inputFat.text.toString().toFloatOrNull()
+                val carb = inputCarbs.text.toString().toFloatOrNull()
+
+                if (name.isBlank() || cal == null || prot == null || fat == null || carb == null) {
+                    Toast.makeText(this, "Заполните все поля корректно", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                SQLBridge.insertCustomProduct(name, cal, prot, fat, carb)
+                Toast.makeText(this, "Продукт добавлен", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
 }
