@@ -1,33 +1,64 @@
-# Укажи минимальную версию CMake
 cmake_minimum_required(VERSION 3.22.1)
 
-project("MyApplication")
+project("myeaty")
 
-add_library(sqlite3 STATIC
-        sqlite/sqlite3.c)
-
-target_include_directories(sqlite3 PUBLIC
-        sqlite)
-
-add_library(native-lib SHARED
-        native-lib.cpp)
-
-target_include_directories(native-lib PRIVATE
-        sqlite)
-
-target_link_libraries(native-lib
+add_library(
         sqlite3
-        log)
-#Подключение к NDK? , чтобы на j-переменные не ругалась
-target_include_directories(native-lib PRIVATE
+        STATIC
+        sqlite/sqlite3.c
+)
+
+target_include_directories(
+        sqlite3
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/sqlite
+)
+
+add_library(
+        myeaty
+        SHARED
+        native-lib.cpp
+        RecipeManager.cpp
+        RationManager.cpp
+)
+
+target_include_directories(
+        myeaty
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/sqlite
         ${CMAKE_SYSROOT}/usr/include
-        sqlite)
-find_library(log-lib log)
-#чтоб редактировать данные
-find_library(log-lib log)
-target_link_libraries( # Specifies the target library.
-        native-lib
+)
+
+find_library(
+        log-lib
+        log
+)
+
+target_link_libraries(
+        myeaty
+        sqlite3
         ${log-lib}
         android
-        jnigraphics)
+        jnigraphics
+)
 
+if (NOT ANDROID)
+    message(STATUS "Configuring unit tests (host build)")
+
+    enable_testing()
+
+    add_subdirectory(external/googletest)
+
+    include_directories(external/googletest/googletest/include)
+
+    add_executable(my_tests
+            RationManagerTest.cpp
+            RecipeManagerTest.cpp
+    )
+
+    target_link_libraries(my_tests
+            gtest
+            gtest_main
+            sqlite3
+    )
+endif()

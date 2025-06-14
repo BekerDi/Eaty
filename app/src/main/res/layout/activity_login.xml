@@ -6,23 +6,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A8B3A5"
-    android:backgroundTint="#A8B3A5"
     tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
+        android:text="Добро пожаловать!"
+        android:textAlignment="center"
+        android:textColor="#090909"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/edt_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Имя"
-        android:background="@android:drawable/edit_text"
-        android:padding="12dp"
+        android:background="@drawable/bg_edittext_rounded"
+        android:padding="16dp"
         android:textColor="#000000"
         android:textColorHint="#888888"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
     <EditText
         android:id="@+id/edt_password"
@@ -30,45 +45,29 @@
         android:layout_height="wrap_content"
         android:hint="Пароль"
         android:inputType="textPassword"
-        android:background="@android:drawable/edit_text"
-        android:padding="12dp"
+        android:background="@drawable/bg_edittext_rounded"
+        android:padding="16dp"
         android:textColor="#000000"
         android:textColorHint="#888888"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/edt_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
-
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
     <Button
         android:id="@+id/btn_enter"
         android:layout_width="192dp"
         android:layout_height="76dp"
-        android:layout_marginStart="109dp"
-        android:layout_marginEnd="110dp"
         android:layout_marginBottom="60dp"
         android:backgroundTint="#434031"
-        android:text="Войти "
+        android:text="Войти"
+        android:textColor="#FFFFFF"
         app:cornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="88dp"
-        android:text="Добро пожаловать!"
-        android:textAlignment="center"
-        android:textColor="#090909"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

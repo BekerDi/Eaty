@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9AA48C"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="180dp"
+        android:layout_height="58dp"
+        android:fontFamily="@font/playfair_display"
+        android:gravity="center"
+        android:text="Рецепты"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.087" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardOatmeal"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="12dp"
+        android:clickable="true"
+        app:cardBackgroundColor="#DCD7C4"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/cardSyrniki"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnOatmeal"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/playfair_display"
+                android:gravity="center"
+                android:text="ОВСЯНОБЛИН"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescriptionOatmeal"
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Блин, приготовленный из овсянки. Он отличается от обычного блина более плотной текстурой и слегка ореховым вкусом."
+                android:textAlignment="center"
+                android:textColor="#1E1E1E"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardSyrniki"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        app:cardBackgroundColor="#DCD7C4"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardOatmeal"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnSyrniki"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/playfair_display"
+                android:gravity="center"
+                android:text="СЫРНИКИ"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescriptionSyrniki"
+                android:layout_width="match_parent"
+                android:layout_height="85dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Жареное горячее блюдо в форме биточков из теста на основе творога и пшеничной муки."
+                android:textAlignment="center"
+                android:textColor="#1E1E1E"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardLasagna"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:clickable="true"
+        app:cardBackgroundColor="#DCD7C4"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/cardAlfredo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardOatmeal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnLasagna"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:fontFamily="@font/playfair_display"
+                android:gravity="center"
+                android:text="ЛАЗАНЬЯ"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescriptionLasagna"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Традиционное итальянское блюдо из тонких прямоугольных или квадратных листов теста, слоёв фарша и сыра с соусом."
+                android:textAlignment="center"
+                android:textColor="#1E1E1E"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardAlfredo"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        app:cardBackgroundColor="#DCD7C4"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardLasagna"
+        app:layout_constraintTop_toBottomOf="@+id/cardSyrniki">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="139dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnAlfredo"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:fontFamily="@font/playfair_display"
+                android:gravity="center"
+                android:text="АЛЬФРЕДО"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescriptionAlfredo"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Итальянское блюдо из пасты фетучини, смешанной со сливочным маслом и молодым сыром пармезан."
+                android:textAlignment="center"
+                android:textColor="#1E1E1E"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardBrownie"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:clickable="true"
+        app:cardBackgroundColor="#DCD7C4"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/cardCake"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardLasagna">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnBrownie"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:fontFamily="@font/playfair_display"
+                android:gravity="center"
+                android:text="БРАУНИ"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescriptionBrownie"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Шоколадный печёный десерт. Брауни бывают разных форм и могут быть как мягкими, так и твёрдыми."
+                android:textAlignment="center"
+                android:textColor="#1E1E1E"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardCake"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        app:cardBackgroundColor="#DCD7C4"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardBrownie"
+        app:layout_constraintTop_toBottomOf="@+id/cardAlfredo">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnCake"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/playfair_display"
+                android:gravity="center"
+                android:text="КЕКС"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescriptionCake"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Сладкий кекс, главным ингредиентом которого являются зрелые бананы. Так же известен как банановый хлеб или банановый пирог."
+                android:textAlignment="center"
+                android:textColor="#1E1E1E"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#A8B3A5"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

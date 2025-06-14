@@ -6,11 +6,24 @@ import android.text.InputFilter
 import android.text.Spanned
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        init {
+            System.loadLibrary("myeaty")
+        }
+    }
+
+    // 2) Объявляем внешний (JNI) метод, который мы реализовали в native-lib.cpp.
+    //    Сигнатура должна соответствовать именно:
+    //      Java_com_example_myeaty_MainActivity_stringFromJNI
+    //    (имя нашего класса + пакет).
+    external fun stringFromJNI(): String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

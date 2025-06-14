@@ -1,16 +1,13 @@
 package com.example.myeaty
 
 import android.util.Log
-import com.example.myeaty.Product
 
 
 object SQLBridge {
 
     init {
-        System.loadLibrary("native-lib")
+        System.loadLibrary("myeaty")
     }
-
-    // 🧩 Нативные методы
     external fun nativeOpenDatabase(path: String): Boolean
     external fun nativeCloseDatabase()
     external fun nativeSaveUserFullData(
@@ -48,7 +45,6 @@ object SQLBridge {
     )
     external fun nativeCheckUserExists(name: String): Boolean
 
-    // 📦 Состояние базы
     private var isDbOpen = false
 
     fun openDatabaseWithLog(path: String) {
@@ -69,7 +65,6 @@ object SQLBridge {
         }
     }
 
-    // 👤 Регистрация пользователя + расчёт КБЖУ
     fun saveUserAndCalculateKBJU(
         name: String,
         gender: Int,
@@ -91,17 +86,14 @@ object SQLBridge {
         return userId
     }
 
-    // 📚 Работа с продуктами
     fun getAllProducts(): List<Product> {
         return nativeGetAllProducts().toList()
     }
 
-    // 📋 Получение профиля
     fun getUserProfile(userId: Int): UserProfile {
         return nativeGetUserProfile(userId)
     }
 
-    // 🛠 Обновление профиля (без пересчёта)
     fun updateUserProfile(
         userId: Int,
         age: Int,
@@ -112,8 +104,6 @@ object SQLBridge {
     ) {
         nativeUpdateUserProfile(userId, age, weight, height, goal, activityLevel)
     }
-
-    // 🔁 Обновление и пересчёт КБЖУ (c явным gender)
     fun updateUserProfileAndRecalculate(
         userId: Int,
         gender: Int,
@@ -128,8 +118,6 @@ object SQLBridge {
         Log.i("MyEatyDebug", "Пересчитаны КБЖУ: К=${result[0]}, Б=${result[1]}, Ж=${result[2]}, У=${result[3]}")
         return result
     }
-
-    // Обновление с автоопределением gender из базы
     fun updateUserProfileWithFetchAndRecalculate(
         userId: Int,
         age: Int,
@@ -146,5 +134,7 @@ object SQLBridge {
     fun insertCustomProduct(name: String, calories: Float, protein: Float, fat: Float, carbs: Float) {
         nativeInsertProduct(name, calories, protein, fat, carbs)
     }
+    external fun nativeClearTables()
+
 
 }

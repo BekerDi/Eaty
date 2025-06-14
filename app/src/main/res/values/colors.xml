@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="nav_icon_color">#FF0000</color>  <!-- Пример: красный -->
+    <color name="nav_text_color">#000000</color>    <!-- Пример: чёрный -->
 </resources>

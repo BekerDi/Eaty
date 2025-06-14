@@ -1,123 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#d9d7c2"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#A8B3A5"
+        android:padding="16dp">
 
-        <!-- Имя пользователя -->
-        <TextView
-            android:id="@+id/txt_user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Имя: Иван"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:background="#eaeaea"
-            android:layout_marginBottom="16dp"
-            android:enabled="false" />
-
-        <!-- Возраст -->
-        <EditText
-            android:id="@+id/edit_age"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Возраст"
-            android:inputType="number"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Вес -->
-        <EditText
-            android:id="@+id/edit_weight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Вес"
-            android:inputType="numberDecimal"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Рост -->
-        <EditText
-            android:id="@+id/edit_height"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Рост"
-            android:inputType="number"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Цель -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Цель"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
-
-        <RadioGroup
-            android:id="@+id/radio_goal_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="12dp">
-
-            <RadioButton
-                android:id="@+id/radio_lose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Похудение" />
-
-            <RadioButton
-                android:id="@+id/radio_keep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Поддержание" />
-
-            <RadioButton
-                android:id="@+id/radio_gain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Набор веса" />
-        </RadioGroup>
-
-        <!-- Уровень активности -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Уровень активности"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
-
-        <Spinner
-            android:id="@+id/spinner_activity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Кнопки -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_save"
+            <TextView
+                android:id="@+id/txt_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Имя: Иван"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:background="#eaeaea"
+                android:layout_marginBottom="16dp"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/edit_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Возраст"
+                android:inputType="number"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/edit_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Вес"
+                android:inputType="numberDecimal"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/edit_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Рост"
+                android:inputType="number"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сохранить"
-                android:layout_marginEnd="16dp" />
+                android:text="Цель"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp" />
 
-            <Button
-                android:id="@+id/btn_cancel"
+            <RadioGroup
+                android:id="@+id/radio_goal_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="12dp">
+
+                <RadioButton
+                    android:id="@+id/radio_lose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Похудение" />
+
+                <RadioButton
+                    android:id="@+id/radio_keep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Поддержание" />
+
+                <RadioButton
+                    android:id="@+id/radio_gain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Набор веса" />
+            </RadioGroup>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Отмена" />
+                android:text="Уровень активности"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spinner_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Сохранить"
+                    android:backgroundTint="#434031"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginEnd="16dp"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"/>
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#434031"
+                    android:text="Отмена"
+                    android:textColor="#FFFFFF"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"/>
+            </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#A8B3A5"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</LinearLayout>
